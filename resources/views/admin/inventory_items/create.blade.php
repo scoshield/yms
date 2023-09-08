@@ -41,7 +41,6 @@
                     </div>
                 </div>
 
-
                 <div class="row">
                     <div class="form-group col-md-6 {{ $errors->has('yard_id') ? 'has-error' : '' }}">
                         <label for="yard">{{ trans('cruds.appointment.fields.yard') }}*</label>
@@ -249,7 +248,6 @@
                         {{ trans('cruds.inventory_item.fields.remarks_helper') }}
                     </p>
                 </div>
-
 
                 <div>
                     <input class="btn btn-danger" type="submit" value="{{ trans('global.save') }}">

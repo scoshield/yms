@@ -107,7 +107,7 @@ class AppointmentsController extends Controller
     public function store(StoreAppointmentRequest $request)
     {
         $request->merge([
-            'yard_id' => 1,
+            'yard_id' => Auth::user()->yard_id,
             'creator_id' => Auth::id()
         ]);
 

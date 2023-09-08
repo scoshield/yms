@@ -144,8 +144,9 @@ class InventoryItemController extends Controller
     public function edit(InventoryItem $inventory_item)
     {
         abort_if(Gate::denies('inventory_item_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        return view('admin.inventory_items.edit', compact('inventory_item'));
+        $yards = Yard::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $departments = Department::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        return view('admin.inventory_items.edit', compact('inventory_item', 'yards', 'departments'));
     }
 
     public function update(Request $request, InventoryItem $inventory_item)

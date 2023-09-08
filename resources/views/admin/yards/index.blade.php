@@ -1,41 +1,30 @@
 @extends('layouts.admin')
 @section('content')
-    @can('appointment_create')
+    @can('yard_create')
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
-                <a class="btn btn-success" href="{{ route('admin.appointments.create') }}">
-                    {{ trans('global.add') }} {{ trans('cruds.appointment.title_singular') }}
+                <a class="btn btn-success" href="{{ route('admin.yards.create') }}">
+                    {{ trans('global.add') }} {{ trans('cruds.yard.title_singular') }}
                 </a>
             </div>
         </div>
     @endcan
     <div class="card">
         <div class="card-header">
-            {{ trans('cruds.appointment.title_singular') }} {{ trans('global.list') }}
+            {{ trans('cruds.yard.title_singular') }} {{ trans('global.list') }}
         </div>
 
         <div class="card-body">
-            <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Appointment">
+            <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Yard">
                 <thead>
                     <tr>
                         <th width="10"></th>
-                        <th>{{ trans('cruds.appointment.fields.id') }}</th>
-                        <th>{{ trans('cruds.appointment.fields.hauler') }}</th>
-                        <th>{{ trans('cruds.appointment.fields.purpose') }} </th>
-                        <th>{{ trans('cruds.appointment.fields.start_time') }}</th>
-                        <th>{{ trans('cruds.appointment.fields.finish_time') }}</th>
-                        <th>
-                            {{ trans('cruds.appointment.fields.driver_name') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.appointment.fields.comments') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.appointment.fields.status') }}
-                        </th>
-                        <th>
-                            &nbsp;
-                        </th>
+                        <th>{{ trans('cruds.yard.fields.id') }}</th>
+                        <th>{{ trans('cruds.yard.fields.name') }}</th>
+                        <th>{{ trans('cruds.yard.fields.physical_location') }}</th>
+                        <th>{{ trans('cruds.yard.fields.phone') }}</th>
+                        <th>{{ trans('cruds.yard.fields.email') }}</th>
+                        <th>&nbsp;</th>
                     </tr>
                 </thead>
             </table>
@@ -49,11 +38,11 @@
     <script>
         $(function() {
             let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-            @can('appointment_delete')
+            @can('yard_delete')
                 let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
                 let deleteButton = {
                     text: deleteButtonTrans,
-                    url: "{{ route('admin.appointments.massDestroy') }}",
+                    url: "{{ route('admin.yards.massDestroy') }}",
                     className: 'btn-danger',
                     action: function(e, dt, node, config) {
                         var ids = $.map(dt.rows({
@@ -95,7 +84,7 @@
                 serverSide: true,
                 retrieve: true,
                 aaSorting: [],
-                ajax: "{{ route('admin.appointments.index') }}",
+                ajax: "{{ route('admin.yards.index') }}",
                 columns: [{
                         data: 'placeholder',
                         name: 'placeholder'
@@ -105,32 +94,20 @@
                         name: 'id'
                     },
                     {
-                        data: 'hauler_name',
-                        name: 'hauler.name'
+                        data: 'name',
+                        name: 'name'
                     },
                     {
-                        data: 'purpose',
-                        name: 'purpose'
+                        data: 'physical_location',
+                        name: 'physical_location'
                     },
                     {
-                        data: 'start_time',
-                        name: 'start_time'
+                        data: 'phone',
+                        name: 'phone'
                     },
                     {
-                        data: 'finish_time',
-                        name: 'finish_time'
-                    },
-                    {
-                        data: 'driver_name',
-                        name: 'driver_name'
-                    },
-                    {
-                        data: 'comments',
-                        name: 'comments'
-                    },
-                    {
-                        data: 'status',
-                        name: 'status'
+                        data: 'email',
+                        name: 'email'
                     },
                     {
                         data: 'actions',
@@ -142,7 +119,7 @@
                 ],
                 pageLength: 100,
             };
-            $('.datatable-Appointment').DataTable(dtOverrideGlobals);
+            $('.datatable-Yard').DataTable(dtOverrideGlobals);
             $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
                 $($.fn.dataTable.tables(true)).DataTable()
                     .columns.adjust();

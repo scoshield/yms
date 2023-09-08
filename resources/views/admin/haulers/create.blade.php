@@ -2,51 +2,49 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            {{ trans('global.edit') }} {{ trans('cruds.department.title_singular') }}
+            {{ trans('global.create') }} {{ trans('cruds.hauler.title_singular') }}
         </div>
 
         <div class="card-body">
-            <form action="{{ route('admin.departments.update', [$department->id]) }}" method="POST"
-                enctype="multipart/form-data">
+            <form action="{{ route('admin.haulers.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                @method('PUT')
                 <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
-                    <label for="name">{{ trans('cruds.department.fields.name') }}</label>
+                    <label for="name">{{ trans('cruds.hauler.fields.name') }}</label>
                     <input type="text" id="name" name="name" class="form-control"
-                        value="{{ old('name', isset($department) ? $department->name : '') }}">
+                        value="{{ old('name', isset($hauler) ? $hauler->name : '') }}">
                     @if ($errors->has('name'))
                         <em class="invalid-feedback">
                             {{ $errors->first('name') }}
                         </em>
                     @endif
                     <p class="helper-block">
-                        {{ trans('cruds.department.fields.name_helper') }}
+                        {{ trans('cruds.hauler.fields.name_helper') }}
                     </p>
                 </div>
                 <div class="form-group {{ $errors->has('phone') ? 'has-error' : '' }}">
-                    <label for="phone">{{ trans('cruds.department.fields.phone') }}</label>
+                    <label for="phone">{{ trans('cruds.hauler.fields.phone') }}</label>
                     <input type="text" id="phone" name="phone" class="form-control"
-                        value="{{ old('phone', isset($department) ? $department->phone : '') }}">
+                        value="{{ old('phone', isset($hauler) ? $hauler->phone : '') }}">
                     @if ($errors->has('phone'))
                         <em class="invalid-feedback">
                             {{ $errors->first('phone') }}
                         </em>
                     @endif
                     <p class="helper-block">
-                        {{ trans('cruds.department.fields.phone_helper') }}
+                        {{ trans('cruds.hauler.fields.phone_helper') }}
                     </p>
                 </div>
                 <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
-                    <label for="email">{{ trans('cruds.department.fields.email') }}</label>
+                    <label for="email">{{ trans('cruds.hauler.fields.email') }}</label>
                     <input type="email" id="email" name="email" class="form-control"
-                        value="{{ old('email', isset($department) ? $department->email : '') }}">
+                        value="{{ old('email', isset($hauler) ? $hauler->email : '') }}">
                     @if ($errors->has('email'))
                         <em class="invalid-feedback">
                             {{ $errors->first('email') }}
                         </em>
                     @endif
                     <p class="helper-block">
-                        {{ trans('cruds.department.fields.email_helper') }}
+                        {{ trans('cruds.hauler.fields.email_helper') }}
                     </p>
                 </div>
                 <div>

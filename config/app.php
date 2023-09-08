@@ -56,6 +56,12 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
+    'purpose_of_visit' => array(
+        'loading' => 'Loading',
+        'offloading' => 'Off loading',
+        'other' => 'Other',
+    ),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

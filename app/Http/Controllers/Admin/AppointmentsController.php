@@ -5,22 +5,25 @@ namespace App\Http\Controllers\Admin;
 use App\Appointment;
 use App\Client;
 use App\Employee;
+use App\Hauler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyAppointmentRequest;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
 use App\Service;
+use App\Yard;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentsController extends Controller
 {
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = Appointment::with(['client', 'employee', 'services'])->select(sprintf('%s.*', (new Appointment)->table));
+            $query = Appointment::with(['hauler', 'creator', 'yard'])->select(sprintf('%s.*', (new Appointment)->table));
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -44,31 +47,38 @@ class AppointmentsController extends Controller
             $table->editColumn('id', function ($row) {
                 return $row->id ? $row->id : "";
             });
-            $table->addColumn('client_name', function ($row) {
-                return $row->client ? $row->client->name : '';
+
+            $table->addColumn('hauler_name', function ($row) {
+                return $row->hauler ? $row->hauler->name : '';
             });
 
-            $table->addColumn('employee_name', function ($row) {
-                return $row->employee ? $row->employee->name : '';
+            $table->addColumn('yard_name', function ($row) {
+                return $row->yard ? $row->yard->name : '';
             });
 
-            $table->editColumn('price', function ($row) {
-                return $row->price ? $row->price : "";
+            $table->addColumn('creator_name', function ($row) {
+                return $row->creator ? $row->creator->name : '';
             });
+
+            $table->editColumn('purpose', function ($row) {
+                return $row->purpose ? $row->purpose : "";
+            });
+
             $table->editColumn('comments', function ($row) {
                 return $row->comments ? $row->comments : "";
             });
-            $table->editColumn('services', function ($row) {
-                $labels = [];
 
-                foreach ($row->services as $service) {
-                    $labels[] = sprintf('<span class="label label-info label-many">%s</span>', $service->name);
-                }
+            // $table->editColumn('services', function ($row) {
+            //     $labels = [];
 
-                return implode(' ', $labels);
-            });
+            //     foreach ($row->services as $service) {
+            //         $labels[] = sprintf('<span class="label label-info label-many">%s</span>', $service->name);
+            //     }
 
-            $table->rawColumns(['actions', 'placeholder', 'client', 'employee', 'services']);
+            //     return implode(' ', $labels);
+            // });
+
+            $table->rawColumns(['actions', 'placeholder', 'yard', 'hauler', 'creator']);
 
             return $table->make(true);
         }
@@ -86,14 +96,23 @@ class AppointmentsController extends Controller
 
         $services = Service::all()->pluck('name', 'id');
 
-        return view('admin.appointments.create', compact('clients', 'employees', 'services'));
+
+        $haulers = Hauler::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $yards = Yard::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $purposes = config('app.purpose_of_visit');
+
+        return view('admin.appointments.create', compact('haulers', 'yards', 'purposes'));
     }
 
     public function store(StoreAppointmentRequest $request)
     {
+        $request->merge([
+            'yard_id' => 1,
+            'creator_id' => Auth::id()
+        ]);
+
         $appointment = Appointment::create($request->all());
         $appointment->services()->sync($request->input('services', []));
-
         return redirect()->route('admin.appointments.index');
     }
 
@@ -102,14 +121,15 @@ class AppointmentsController extends Controller
         abort_if(Gate::denies('appointment_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $clients = Client::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
         $employees = Employee::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
         $services = Service::all()->pluck('name', 'id');
 
-        $appointment->load('client', 'employee', 'services');
+        $haulers = Hauler::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $yards = Yard::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $purposes = config('app.purpose_of_visit');
+        $appointment->load('hauler', 'yard', 'creator');
 
-        return view('admin.appointments.edit', compact('clients', 'employees', 'services', 'appointment'));
+        return view('admin.appointments.edit', compact('haulers', 'yards', 'purposes', 'appointment'));
     }
 
     public function update(UpdateAppointmentRequest $request, Appointment $appointment)

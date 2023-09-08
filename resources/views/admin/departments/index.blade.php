@@ -3,7 +3,7 @@
     @can('department_create')
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
-                <a class="btn btn-success" href="{{ route('admin.department.create') }}">
+                <a class="btn btn-success" href="{{ route('admin.departments.create') }}">
                     {{ trans('global.add') }} {{ trans('cruds.department.title_singular') }}
                 </a>
             </div>
@@ -47,12 +47,12 @@
     <script>
         $(function() {
             let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-            @can('department_delete')
+            @can('department_delete_')
                 let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
-                
+
                 let deleteButton = {
                     text: deleteButtonTrans,
-                    url: "{{ route('admin.department.massDestroy') }}",
+                    url: "{{ route('admin.departments.massDestroy') }}",
                     className: 'btn-danger',
                     action: function(e, dt, node, config) {
                         var ids = $.map(dt.rows({
@@ -93,7 +93,7 @@
                 serverSide: true,
                 retrieve: true,
                 aaSorting: [],
-                ajax: "{{ route('admin.department.index') }}",
+                ajax: "{{ route('admin.departments.index') }}",
                 columns: [{
                         data: 'placeholder',
                         name: 'placeholder'

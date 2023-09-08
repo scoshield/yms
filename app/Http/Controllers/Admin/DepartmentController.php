@@ -27,7 +27,7 @@ class DepartmentController extends Controller
                 $viewGate      = 'department_show';
                 $editGate      = 'department_edit';
                 $deleteGate    = 'department_delete';
-                $crudRoutePart = 'Department';
+                $crudRoutePart = 'departments';
 
                 return view('partials.datatablesActions', compact(
                     'viewGate',

@@ -15,7 +15,7 @@ class CreateYardsTable extends Migration
     {
         Schema::create('yards', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('yard_name')->unique();
+            $table->string('name')->unique();
             $table->string('physical_location');
             $table->string('phone')->nullable();
             $table->string('email')->nullable();

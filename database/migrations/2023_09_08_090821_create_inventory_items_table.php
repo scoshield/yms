@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductsTable extends Migration
+class CreateInventoryItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,14 @@ class CreateProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('inventory_items', function (Blueprint $table) {
             $table->increments('id');
             $table->string('category');
             $table->string('ref'); //container or tanktainer number
             $table->string('um_number')->nullable();
             $table->unsignedInteger('yard_id'); // Location
             $table->unsignedInteger('department_id');
+            $table->unsignedInteger('creator_id');
             $table->string('rtn_port')->nullable();
             $table->string('size')->nullable();
             $table->string('status')->nullable();
@@ -33,6 +34,8 @@ class CreateProductsTable extends Migration
             $table->timestamps();
             $table->foreign('yard_id')->references('id')->on('yards')->onDelete('restrict');
             $table->foreign('department_id')->references('id')->on('departments')->onDelete('restrict');
+            $table->foreign('creator_id')->references('id')->on('users')->onDelete('restrict');
+            $table->softDeletes();
         });
     }
 
@@ -43,6 +46,6 @@ class CreateProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('inventory_items');
     }
 }

@@ -12,7 +12,7 @@ class SystemCalendarController extends Controller
     {
         $events = [];
 
-        $appointments = Appointment::with(['client', 'employee'])->get();
+        $appointments = Appointment::with(['hauler', 'yard', 'creator'])->get();
 
         foreach ($appointments as $appointment) {
             if (!$appointment->start_time) {
@@ -20,7 +20,7 @@ class SystemCalendarController extends Controller
             }
 
             $events[] = [
-                'title' => $appointment->client->name . ' ('.$appointment->employee->name.')',
+                'title' => $appointment->hauler->name.', '.$appointment->driver_name . ' (' . $appointment->yard->name . ')',
                 'start' => $appointment->start_time,
                 'url'   => route('admin.appointments.edit', $appointment->id),
             ];

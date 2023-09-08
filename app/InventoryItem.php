@@ -2,39 +2,42 @@
 
 namespace App;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Appointment extends Model
+class InventoryItem extends Model
 {
     use SoftDeletes, HasFactory;
 
-    public $table = 'appointments';
+    public $table = 'inventory_items';
 
     protected $dates = [
-        'start_time',
         'created_at',
         'updated_at',
         'deleted_at',
-        'finish_time',
     ];
 
     protected $fillable = [
-        'start_time',
-        'finish_time',
+        'category',
         'yard_id',
-        'purpose',
-        'hauler_id',
         'creator_id',
-        'truck_details',
-        'driver_name',
-        'contact_details',
-        'file_number',
-        'container_number',
+        'department_id',
+        'ref',
+        'um_number',
+        'rtn_port',
+        'size',
         'status',
-        'comments',
+        'structural_status',
+        'inspected',
+        'inspection_status',
+        'general_condition',
+        'refurbished',
+        'creator',
+        'cnumbers_visible',
+        'year_manufactured',
+        'type',
+        'remarks',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -45,9 +48,9 @@ class Appointment extends Model
         return $this->belongsTo(Yard::class, 'yard_id');
     }
 
-    public function hauler()
+    public function department()
     {
-        return $this->belongsTo(Hauler::class, 'hauler_id');
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
     public function creator()
@@ -55,13 +58,4 @@ class Appointment extends Model
         return $this->belongsTo(User::class, 'creator_id');
     }
 
-    protected function serializeDate(\DateTimeInterface $date)
-    {
-        return $date->format('Y-m-d H:i:s');
-    }
-
-    public function services()
-    {
-        return $this->belongsToMany(Service::class);
-    }
 }

@@ -19,10 +19,10 @@ class StoreAppointmentRequest extends FormRequest
     public function rules()
     {
         return [
-            'client_id'   => [
-                'required',
-                'integer',
-            ],
+            // 'client_id'   => [
+            //     'required',
+            //     'integer',
+            // ],
             'start_time'  => [
                 'required',
                 'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
@@ -31,12 +31,12 @@ class StoreAppointmentRequest extends FormRequest
                 'required',
                 'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
             ],
-            'services.*'  => [
-                'integer',
-            ],
-            'services'    => [
-                'array',
-            ],
+            // 'yards.*'  => [
+            //     'integer',
+            // ],
+            // 'services'    => [
+            //     'array',
+            // ],
         ];
     }
 }

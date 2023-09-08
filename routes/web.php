@@ -50,17 +50,22 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('system-calendar', 'SystemCalendarController@index')->name('systemCalendar');
 
     // Department
-    Route::delete('department/destroy', 'DepartmentController@massDestroy')->name('department.massDestroy');
-    Route::post('department/media', 'DepartmentController@storeMedia')->name('department.storeMedia');
-    Route::resource('department', 'DepartmentController');
+    Route::delete('departments/destroy', 'DepartmentController@massDestroy')->name('departments.massDestroy');
+    Route::post('departments/media', 'DepartmentController@storeMedia')->name('departments.storeMedia');
+    Route::resource('departments', 'DepartmentController');
 
     // Yard
-    Route::delete('yard/destroy', 'YardController@massDestroy')->name('yard.massDestroy');
-    Route::post('yard/media', 'YardController@storeMedia')->name('yard.storeMedia');
-    Route::resource('yard', 'YardController');
+    Route::delete('yards/destroy', 'YardController@massDestroy')->name('yards.massDestroy');
+    Route::post('yards/media', 'YardController@storeMedia')->name('yards.storeMedia');
+    Route::resource('yards', 'YardController');
 
     // Hauler
-    Route::delete('hauler/destroy', 'HaulerController@massDestroy')->name('hauler.massDestroy');
-    Route::post('hauler/media', 'HaulerController@storeMedia')->name('hauler.storeMedia');
-    Route::resource('hauler', 'HaulerController');
+    Route::delete('haulers/destroy', 'HaulerController@massDestroy')->name('haulers.massDestroy');
+    Route::post('haulers/media', 'HaulerController@storeMedia')->name('haulers.storeMedia');
+    Route::resource('haulers', 'HaulerController');
+
+    // Inventory items
+    Route::delete('inventory_items/destroy', 'InventoryItemController@massDestroy')->name('inventory_items.massDestroy');
+    Route::post('inventory_items/media', 'InventoryItemController@storeMedia')->name('inventory_items.storeMedia');
+    Route::resource('inventory_items', 'InventoryItemController');
 });

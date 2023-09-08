@@ -17,8 +17,9 @@ class Yard extends Model
     ];
 
     protected $fillable = [
-        'yard_name',
+        'name',
         'phone',
+        'physical_location',
         'email',
         'created_at',
         'updated_at',

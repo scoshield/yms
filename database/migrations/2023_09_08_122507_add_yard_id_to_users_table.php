@@ -15,7 +15,7 @@ class AddYardIdToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->unsignedInteger('yard_id')->nullable(); // Location
-            $table->foreign('yard_id')->references('id')->on('yards')->onDelete('restrict');
+            $table->foreign('yard_id')->references('id')->on('yards');
         });
     }
 
@@ -27,6 +27,7 @@ class AddYardIdToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign('users_yard_id_foreign');
             $table->dropColumn('yard_id');
         });
     }

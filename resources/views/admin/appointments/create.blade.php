@@ -45,8 +45,8 @@
                     </div>
                 </div>
 
-                {{-- <div class="form-group {{ $errors->has('yard_id') ? 'has-error' : '' }}">
-                    <label for="yard">{{ trans('cruds.appointment.fields.yard') }}</label>
+                <div class="form-group {{ $errors->has('yard_id') ? 'has-error' : '' }}">
+                    <label for="yard">{{ trans('cruds.appointment.fields.yard') }} *</label>
                     <select name="yard_id" id="yard" class="form-control select2">
                         @foreach ($yards as $id => $yard)
                             <option value="{{ $id }}"
@@ -59,39 +59,25 @@
                             {{ $errors->first('yard_id') }}
                         </em>
                     @endif
-                </div> --}}
-                <div class="row">
-                    <div class="form-group col-md-6 {{ $errors->has('start_time') ? 'has-error' : '' }}">
-                        <label for="start_time">{{ trans('cruds.appointment.fields.start_time') }}*</label>
-                        <input type="text" id="start_time" name="start_time" class="form-control datetime"
-                            value="{{ old('start_time', isset($appointment) ? $appointment->start_time : '') }}" required>
-                        @if ($errors->has('start_time'))
-                            <em class="invalid-feedback">
-                                {{ $errors->first('start_time') }}
-                            </em>
-                        @endif
-                        <p class="helper-block">
-                            {{ trans('cruds.appointment.fields.start_time_helper') }}
-                        </p>
-                    </div>
-
-                    <div class="form-group col-md-6 {{ $errors->has('finish_time') ? 'has-error' : '' }}">
-                        <label for="finish_time">{{ trans('cruds.appointment.fields.finish_time') }}*</label>
-                        <input type="text" id="finish_time" name="finish_time" class="form-control datetime"
-                            value="{{ old('finish_time', isset($appointment) ? $appointment->finish_time : '') }}"
-                            required>
-                        @if ($errors->has('finish_time'))
-                            <em class="invalid-feedback">
-                                {{ $errors->first('finish_time') }}
-                            </em>
-                        @endif
-                        <p class="helper-block">
-                            {{ trans('cruds.appointment.fields.finish_time_helper') }}
-                        </p>
-                    </div>
                 </div>
 
                 <div class="row">
+                    <div class="form-group col-md-6 {{ $errors->has('appointment_date') ? 'has-error' : '' }}">
+                        <label for="appointment_date">
+                            {{ trans('cruds.appointment.fields.date') }} *
+                        </label>
+                        <input type="text" id="appointment_date" name="appointment_date" class="form-control datetime"
+                            value="{{ old('appointment_date', isset($appointment) ? $appointment->appointment_date : '') }}" required>
+                        @if ($errors->has('appointment_date'))
+                            <em class="invalid-feedback">
+                                {{ $errors->first('appointment_date') }}
+                            </em>
+                        @endif
+                        <p class="helper-block">
+                            {{ trans('cruds.appointment.fields.date_helper') }}
+                        </p>
+                    </div>
+
                     <div class="form-group col-md-6 {{ $errors->has('file_number') ? 'has-error' : '' }}">
                         <label for="file_number">{{ trans('cruds.appointment.fields.file_number') }}</label>
                         <input type="text" id="file_number" name="file_number" class="form-control"
@@ -105,7 +91,9 @@
                             {{ trans('cruds.appointment.fields.file_number_helper') }}
                         </p>
                     </div>
+                </div>
 
+                <div class="row">
                     <div class="form-group col-md-6 {{ $errors->has('container_number') ? 'has-error' : '' }}">
                         <label for="container_number">{{ trans('cruds.appointment.fields.container_number') }}</label>
                         <input type="text" id="container_number" name="container_number" class="form-control"
@@ -117,6 +105,20 @@
                         @endif
                         <p class="helper-block">
                             {{ trans('cruds.appointment.fields.container_number_helper') }}
+                        </p>
+                    </div>
+
+                     <div class="form-group col-md-6 {{ $errors->has('driver_name') ? 'has-error' : '' }}">
+                        <label for="driver_name">{{ trans('cruds.appointment.fields.driver_name') }}</label>
+                        <input type="text" id="driver_name" name="driver_name" class="form-control"
+                            value="{{ old('driver_name', isset($appointment) ? $appointment->driver_name : '') }}">
+                        @if ($errors->has('driver_name'))
+                            <em class="invalid-feedback">
+                                {{ $errors->first('driver_name') }}
+                            </em>
+                        @endif
+                        <p class="helper-block">
+                            {{ trans('cruds.appointment.fields.driver_name_helper') }}
                         </p>
                     </div>
                 </div>
@@ -136,20 +138,6 @@
                 </div> --}}
 
                 <div class="row">
-                    <div class="form-group col-md-6 {{ $errors->has('driver_name') ? 'has-error' : '' }}">
-                        <label for="driver_name">{{ trans('cruds.appointment.fields.driver_name') }}</label>
-                        <input type="text" id="driver_name" name="driver_name" class="form-control"
-                            value="{{ old('driver_name', isset($appointment) ? $appointment->driver_name : '') }}">
-                        @if ($errors->has('driver_name'))
-                            <em class="invalid-feedback">
-                                {{ $errors->first('driver_name') }}
-                            </em>
-                        @endif
-                        <p class="helper-block">
-                            {{ trans('cruds.appointment.fields.driver_name_helper') }}
-                        </p>
-                    </div>
-
                     <div class="form-group col-md-6 {{ $errors->has('contact_details') ? 'has-error' : '' }}">
                         <label for="contact_details">{{ trans('cruds.appointment.fields.contact_details') }}</label>
                         <input type="text" id="contact_details" name="contact_details" class="form-control"
@@ -163,23 +151,25 @@
                             {{ trans('cruds.appointment.fields.contact_details_helper') }}
                         </p>
                     </div>
+
+                    <div class="form-group col-md-6 {{ $errors->has('truck_details') ? 'has-error' : '' }}">
+                        <label for="truck_details">{{ trans('cruds.appointment.fields.truck_details') }}</label>
+                        <input type="text" id="truck_details" name="truck_details" class="form-control"
+                            value="{{ old('truck_details', isset($appointment) ? $appointment->truck_details : '') }}">
+
+                        @if ($errors->has('truck_details'))
+                            <em class="invalid-feedback">
+                                {{ $errors->first('truck_details') }}
+                            </em>
+                        @endif
+
+                        <p class="helper-block">
+                            {{ trans('cruds.appointment.fields.track_details_helper') }}
+                        </p>
+                    </div>
+
                 </div>
 
-                <div class="form-group {{ $errors->has('truck_details') ? 'has-error' : '' }}">
-                    <label for="truck_details">{{ trans('cruds.appointment.fields.truck_details') }}</label>
-                    <input type="text" id="truck_details" name="truck_details" class="form-control"
-                        value="{{ old('truck_details', isset($appointment) ? $appointment->truck_details : '') }}">
-
-                    @if ($errors->has('truck_details'))
-                        <em class="invalid-feedback">
-                            {{ $errors->first('truck_details') }}
-                        </em>
-                    @endif
-
-                    <p class="helper-block">
-                        {{ trans('cruds.appointment.fields.track_details_helper') }}
-                    </p>
-                </div>
 
                 <div class="form-group {{ $errors->has('comments') ? 'has-error' : '' }}">
                     <label for="comments">{{ trans('cruds.appointment.fields.comments') }}</label>

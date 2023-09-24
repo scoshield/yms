@@ -14,16 +14,18 @@ class Appointment extends Model
     public $table = 'appointments';
 
     protected $dates = [
-        'start_time',
+        // 'start_time',
+        'appointment_date',
         'created_at',
         'updated_at',
         'deleted_at',
-        'finish_time',
+        // 'finish_time',
     ];
 
     protected $fillable = [
-        'start_time',
-        'finish_time',
+        // 'start_time',
+        // 'finish_time',
+        'appointment_date',
         'yard_id',
         'purpose',
         'hauler_id',
@@ -63,5 +65,9 @@ class Appointment extends Model
     public function services()
     {
         return $this->belongsToMany(Service::class);
+    }
+
+    public function loading_bay_session(){
+        return $this->hasOne(LoadingBay::class, 'appointment_id');
     }
 }

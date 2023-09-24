@@ -16,4 +16,9 @@ class CreateServicesTable extends Migration
             $table->softDeletes();
         });
     }
+
+    public function down()
+    {
+        Schema::dropIfExists('services');
+    }
 }

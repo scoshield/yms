@@ -19,4 +19,12 @@ class AddRelationshipFieldsToAppointmentsTable extends Migration
             $table->foreign('hauler_id')->references('id')->on('haulers');
         });
     }
+
+   public function down(){
+        #<table_name>_<foreign_table_name>_<column_name>_foreign
+        //Schema::disableForeignKeyConstraints();
+        // Schema::dropForeign('appointments_creator_id_foreign');
+        // Schema::dropForeign('appointments_yard_id_foreign');
+        // Schema::dropForeign('appointments_hauler_id_foreign');
+    }
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyAppointmentRequest;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
+use App\LoadingBay;
 use App\Service;
 use App\Yard;
 use Gate;
@@ -17,13 +18,15 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AppointmentsController extends Controller
 {
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = Appointment::with(['hauler', 'creator', 'yard'])->select(sprintf('%s.*', (new Appointment)->table));
+            $query = Appointment::with(['hauler', 'creator', 'yard'])
+            ->select(sprintf('%s.*', (new Appointment)->table));
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -33,12 +36,14 @@ class AppointmentsController extends Controller
                 $viewGate      = 'appointment_show';
                 $editGate      = 'appointment_edit';
                 $deleteGate    = 'appointment_delete';
+                $admitAppointmentGate = 'appointment_admit';
                 $crudRoutePart = 'appointments';
 
                 return view('partials.datatablesActions', compact(
                     'viewGate',
                     'editGate',
                     'deleteGate',
+                    'admitAppointmentGate',
                     'crudRoutePart',
                     'row'
                 ));
@@ -96,7 +101,6 @@ class AppointmentsController extends Controller
 
         $services = Service::all()->pluck('name', 'id');
 
-
         $haulers = Hauler::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
         $yards = Yard::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
         $purposes = config('app.purpose_of_visit');
@@ -107,7 +111,7 @@ class AppointmentsController extends Controller
     public function store(StoreAppointmentRequest $request)
     {
         $request->merge([
-            'yard_id' => Auth::user()->yard_id,
+            //'yard_id' => Auth::user()->yard_id,
             'creator_id' => Auth::id()
         ]);
 
@@ -155,6 +159,24 @@ class AppointmentsController extends Controller
 
         $appointment->delete();
 
+        return back();
+    }
+
+    public function admit(Request $request)
+    {
+        abort_if(Gate::denies('appointment_admit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+       
+        DB::transaction(function() use ($request) {
+            $appointment = Appointment::find($request->id);
+            $appointment->update(['status' => 'admitted']);
+            
+            LoadingBay::create([
+                'ref' => uniqid("dck", true),
+                'appointment_id' => $appointment->id,
+                'type' => $appointment->purpose
+            ]);
+        });
+        
         return back();
     }
 

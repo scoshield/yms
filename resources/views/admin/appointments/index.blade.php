@@ -22,20 +22,13 @@
                         <th>{{ trans('cruds.appointment.fields.id') }}</th>
                         <th>{{ trans('cruds.appointment.fields.hauler') }}</th>
                         <th>{{ trans('cruds.appointment.fields.purpose') }} </th>
-                        <th>{{ trans('cruds.appointment.fields.start_time') }}</th>
-                        <th>{{ trans('cruds.appointment.fields.finish_time') }}</th>
-                        <th>
-                            {{ trans('cruds.appointment.fields.driver_name') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.appointment.fields.comments') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.appointment.fields.status') }}
-                        </th>
-                        <th>
-                            &nbsp;
-                        </th>
+                        <th>{{ trans('cruds.appointment.fields.date') }}</th>
+                        {{-- <th>{{ trans('cruds.appointment.fields.start_time') }}</th>
+                        <th>{{ trans('cruds.appointment.fields.finish_time') }}</th> --}}
+                        <th>{{ trans('cruds.appointment.fields.driver_name') }}</th>
+                        <th>{{ trans('cruds.appointment.fields.comments') }}</th>
+                        <th>{{ trans('cruds.appointment.fields.status') }}</th>
+                        <th>&nbsp;</th>
                     </tr>
                 </thead>
             </table>
@@ -113,13 +106,17 @@
                         name: 'purpose'
                     },
                     {
-                        data: 'start_time',
-                        name: 'start_time'
+                        data: 'appointment_date',
+                        name: 'appointment_date'
                     },
-                    {
-                        data: 'finish_time',
-                        name: 'finish_time'
-                    },
+                    // {
+                    //     data: 'start_time',
+                    //     name: 'start_time'
+                    // },
+                    // {
+                    //     data: 'finish_time',
+                    //     name: 'finish_time'
+                    // },
                     {
                         data: 'driver_name',
                         name: 'driver_name'

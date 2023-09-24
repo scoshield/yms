@@ -10,16 +10,16 @@ class CreateClientsTable extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->increments('id');
-
             $table->string('name')->nullable();
-
             $table->string('phone')->nullable();
-
             $table->string('email')->nullable();
-
             $table->timestamps();
-
             $table->softDeletes();
         });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('clients');
     }
 }

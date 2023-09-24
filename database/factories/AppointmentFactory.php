@@ -25,8 +25,9 @@ class AppointmentFactory extends Factory
         return [
             'client_id' => \App\Client::inRandomOrder()->first()->id,
             'employee_id' => \App\Employee::inRandomOrder()->first()->id,
-            'start_time' => $start_time->format('Y-m-d H') . ':00',
-            'finish_time' => $start_time->addHours(rand(1, 2))->format('Y-m-d H') . ':00',
+            'appointment_date' => $start_time->format('Y-m-d H') . ':00',
+            //'start_time' => $start_time->format('Y-m-d H') . ':00',
+            //'finish_time' => $start_time->addHours(rand(1, 2))->format('Y-m-d H') . ':00',
         ];
     }
 }

@@ -15,4 +15,9 @@ class CreateEmployeeServicePivotTable extends Migration
             $table->foreign('service_id', 'service_id_fk_360622')->references('id')->on('services')->onDelete('cascade');
         });
     }
+
+    public function down()
+    {
+        Schema::dropIfExists('employee_service');
+    }
 }

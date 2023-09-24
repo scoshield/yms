@@ -43,8 +43,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('clients', 'ClientsController');
 
     // Appointments
+    Route::post('appointments/admit', 'AppointmentsController@admit')->name('appointments.admit');
     Route::delete('appointments/destroy', 'AppointmentsController@massDestroy')->name('appointments.massDestroy');
     Route::resource('appointments', 'AppointmentsController');
+
+    // Loading Bay
+    Route::post('loadingbay/start', 'LoadingBayController@start')->name('loadingbay.start');
+    Route::post('loadingbay/finish', 'LoadingBayController@finish')->name('loadingbay.finish');
+    Route::delete('loadingbay/destroy', 'LoadingBayController@massDestroy')->name('loadingbay.massDestroy');
+    Route::resource('loadingbay', 'LoadingBayController');
 
     // SystemCalendar
     Route::get('system-calendar', 'SystemCalendarController@index')->name('systemCalendar');

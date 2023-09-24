@@ -36,6 +36,7 @@
                     </a>
                 </li> --}}
             @endcan
+
             @can('client_access')
                 <li class="nav-item">
                     <a href="{{ route('admin.clients.index') }}"
@@ -45,12 +46,22 @@
                     </a>
                 </li>
             @endcan
+
             @can('appointment_access')
                 <li class="nav-item">
                     <a href="{{ route('admin.appointments.index') }}"
                         class="nav-link {{ request()->is('admin/appointments') || request()->is('admin/appointments/*') ? 'active' : '' }}">
                         <i class="fa-fw fas fa-calendar-plus nav-icon"> </i>
                         {{ trans('cruds.appointment.title') }}
+                    </a>
+                </li>
+            @endcan
+
+            @can('loadingbay_access')
+                <li class="nav-item">
+                    <a href="{{ route('admin.loadingbay.index') }}"
+                        class="nav-link {{ request()->is('admin/loadingbay') || request()->is('admin/admin/loadingbay/*') ? 'active' : '' }}"> 
+                        <i class="fas fa-truck-loading nav-icon"></i> {{ trans('cruds.loadingbay.title') }}
                     </a>
                 </li>
             @endcan

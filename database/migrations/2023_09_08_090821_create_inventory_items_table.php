@@ -32,9 +32,9 @@ class CreateInventoryItemsTable extends Migration
             $table->string('type')->nullable();
             $table->string('remarks')->nullable();
             $table->timestamps();
-            $table->foreign('yard_id')->references('id')->on('yards')->onDelete('restrict');
-            $table->foreign('department_id')->references('id')->on('departments')->onDelete('restrict');
-            $table->foreign('creator_id')->references('id')->on('users')->onDelete('restrict');
+            $table->foreign('yard_id')->references('id')->on('yards');
+            $table->foreign('department_id')->references('id')->on('departments');
+            $table->foreign('creator_id')->references('id')->on('users');
             $table->softDeletes();
         });
     }

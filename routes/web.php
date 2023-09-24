@@ -4,8 +4,10 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/login');
-Route::redirect('/home', '/admin');
+define('BASE_URL', env('APP_URL'));
+
+Route::redirect('/', BASE_URL.'/login');
+Route::redirect('/home', BASE_URL.'/admin');
 Auth::routes(['register' => false]);
 
 // Profile Routes

@@ -8,12 +8,12 @@
                     {{ trans('global.dashboard') }}
                 </a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a href="{{ route('profile.detail') }}" class="nav-link">
                     <i class="nav-icon fas fa-fw fa-user"> </i>
                     Profile
                 </a>
-            </li>
+            </li> --}}
             @can('service_access')
                 {{-- <li class="nav-item">
                     <a href="{{ route('admin.services.index') }}"
@@ -155,11 +155,8 @@
             @endcan
 
             <li class="nav-item">
-                <a href="#" class="nav-link"
-                    onclick="event.preventDefault(); document.getElementById('logoutform').submit();">
-                    <i class="nav-icon fas fa-fw fa-sign-out-alt">
-
-                    </i>
+                <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('logoutform').submit();">
+                    <i class="nav-icon fas fa-fw fa-sign-out-alt"></i>
                     {{ trans('global.logout') }}
                 </a>
             </li>

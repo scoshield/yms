@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\department;
+use App\Department;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroydepartmentRequest;
 use App\Http\Requests\StoredepartmentRequest;
@@ -70,7 +70,7 @@ class DepartmentController extends Controller
     {
         $department = department::create($request->all());
 
-        return redirect()->route('admin.department.index');
+        return redirect()->route('admin.departments.index');
     }
 
     public function edit(department $department)
@@ -84,7 +84,7 @@ class DepartmentController extends Controller
     {
         $department->update($request->all());
 
-        return redirect()->route('admin.department.index');
+        return redirect()->route('admin.departments.index');
     }
 
     public function show(department $department)

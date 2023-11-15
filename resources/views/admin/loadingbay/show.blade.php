@@ -2,7 +2,7 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            {{ trans('global.show') }} {{ trans('cruds.hauler.title') }}
+            {{ trans('global.show') }} {{ trans('cruds.loadingbay.title') }}
         </div>
 
         <div class="card-body">
@@ -11,35 +11,82 @@
                     <tbody>
                         <tr>
                             <th>
-                                {{ trans('cruds.hauler.fields.id') }}
+                                {{ trans('cruds.loadingbay.fields.id') }}
                             </th>
                             <td>
-                                {{ $hauler->id }}
+                                {{ $loadingbay->id }}
                             </td>
                         </tr>
                         <tr>
                             <th>
-                                {{ trans('cruds.hauler.fields.name') }}
+                                Type
                             </th>
                             <td>
-                                {{ $hauler->name }}
+                                {{ $loadingbay->type }}
                             </td>
                         </tr>
                         <tr>
                             <th>
-                                {{ trans('cruds.hauler.fields.phone') }}
+                                Appointment Date & Time
                             </th>
                             <td>
-                                {{ $hauler->phone }}
+                                {{ $loadingbay->appointment->appointment_date }}
                             </td>
                         </tr>
                         <tr>
                             <th>
-                                {{ trans('cruds.hauler.fields.email') }}
+                                Truck Details
                             </th>
                             <td>
-                                {{ $hauler->email }}
+                                {{ $loadingbay->appointment->truck_details }}
                             </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Driver Details
+                            </th>
+                            <td>
+                                {{ $loadingbay->appointment->driver_name }},
+                                {{ $loadingbay->appointment->contact_details }},
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                File Number
+                            </th>
+                            <td>
+                                {{ $loadingbay->appointment->file_number }}
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Container Number
+                            </th>
+                            <td>
+                                {{ $loadingbay->appointment->container_number }}
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Yard
+                            </th>
+                            <td>
+                                {{ $loadingbay->appointment->yard->name }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Status
+                            </th>
+                            <td>
+                                {{ $loadingbay->status }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Comments</th>
+                            <td>{{ $loadingbay->appointment->comments }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -50,7 +97,6 @@
 
             <nav class="mb-3">
                 <div class="nav nav-tabs">
-
                 </div>
             </nav>
             <div class="tab-content">

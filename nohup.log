@@ -1,0 +1,30 @@
+[32mStarting Laravel development server:[39m http://127.0.0.1:8000
+[Wed Sep 13 14:20:31 2023] PHP 8.2.4 Development Server (http://127.0.0.1:8000) started
+[Wed Sep 13 14:20:46 2023] 127.0.0.1:51456 Accepted
+[Wed Sep 13 14:20:46 2023] 127.0.0.1:51457 Accepted
+[Wed Sep 13 14:20:46 2023] 127.0.0.1:51456 Closing
+[Wed Sep 13 14:20:46 2023] 127.0.0.1:51463 Accepted
+[Wed Sep 13 14:20:46 2023] 127.0.0.1:51457 Closing
+[Wed Sep 13 14:20:46 2023] 127.0.0.1:51463 [200]: GET /css/custom.css
+[Wed Sep 13 14:20:46 2023] 127.0.0.1:51463 Closing
+[Wed Sep 13 14:20:48 2023] 127.0.0.1:51510 Accepted
+[Wed Sep 13 14:20:48 2023] 127.0.0.1:51510 [200]: GET /favicon.ico
+[Wed Sep 13 14:20:48 2023] 127.0.0.1:51510 Closing
+[Wed Sep 13 14:20:48 2023] 127.0.0.1:51516 Accepted
+[Wed Sep 13 14:20:51 2023] 127.0.0.1:51516 Closed without sending a request; it was probably just an unused speculative preconnection
+[Wed Sep 13 14:20:51 2023] 127.0.0.1:51516 Closing
+[Wed Sep 13 14:20:53 2023] 127.0.0.1:51633 Accepted
+[Wed Sep 13 14:20:53 2023] 127.0.0.1:51634 Accepted
+[Wed Sep 13 14:20:54 2023] 127.0.0.1:51633 Closing
+[Wed Sep 13 14:20:54 2023] 127.0.0.1:51641 Accepted
+[Wed Sep 13 14:20:54 2023] 127.0.0.1:51634 Closing
+[Wed Sep 13 14:20:54 2023] 127.0.0.1:51641 Closing
+[Wed Sep 13 14:20:54 2023] 127.0.0.1:51695 Accepted
+[Wed Sep 13 14:20:54 2023] 127.0.0.1:51695 [200]: GET /css/custom.css
+[Wed Sep 13 14:20:54 2023] 127.0.0.1:51696 Accepted
+[Wed Sep 13 14:20:54 2023] 127.0.0.1:51696 [200]: GET /js/main.js
+[Wed Sep 13 14:20:54 2023] 127.0.0.1:51695 Closing
+[Wed Sep 13 14:20:54 2023] 127.0.0.1:51696 Closing
+[Wed Sep 13 14:20:54 2023] 127.0.0.1:51707 Accepted
+[Wed Sep 13 14:20:56 2023] 127.0.0.1:51707 [200]: GET /favicon.ico
+[Wed Sep 13 14:20:56 2023] 127.0.0.1:51707 Closing

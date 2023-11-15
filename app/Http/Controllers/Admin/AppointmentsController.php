@@ -148,7 +148,7 @@ class AppointmentsController extends Controller
     {
         abort_if(Gate::denies('appointment_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $appointment->load('client', 'employee', 'services');
+        //$appointment->load('client', 'employee', 'services');
 
         return view('admin.appointments.show', compact('appointment'));
     }

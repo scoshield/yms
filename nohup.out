@@ -1,0 +1,10 @@
+[32mStarting Laravel development server:[39m http://127.0.0.1:8000
+[Wed Sep 13 09:27:40 2023] PHP 8.2.4 Development Server (http://127.0.0.1:8000) started
+[Wed Sep 13 09:27:58 2023] 127.0.0.1:60960 Accepted
+[Wed Sep 13 09:27:58 2023] 127.0.0.1:60961 Accepted
+[Wed Sep 13 09:27:58 2023] 127.0.0.1:60960 Closing
+[Wed Sep 13 09:27:58 2023] 127.0.0.1:60967 Accepted
+[Wed Sep 13 09:27:58 2023] 127.0.0.1:60961 [200]: GET /css/custom.css
+[Wed Sep 13 09:27:58 2023] 127.0.0.1:60961 Closing
+[Wed Sep 13 09:27:59 2023] 127.0.0.1:60967 [200]: GET /favicon.ico
+[Wed Sep 13 09:27:59 2023] 127.0.0.1:60967 Closing

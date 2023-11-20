@@ -10,12 +10,14 @@
     "require": {
         "php": "^7.3|^8.0",
         "doctrine/dbal": "^2.11",
+        "elibyy/tcpdf-laravel": "^10.0",
         "fideloper/proxy": "^4.2",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.0",
         "laravel/passport": "^10.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
+        "simplesoftwareio/simple-qrcode": "~4",
         "spatie/laravel-medialibrary": "^8.7",
         "yajra/laravel-datatables-oracle": "^9.6"
     },

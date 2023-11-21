@@ -188,7 +188,7 @@ class AppointmentsController extends Controller
             $this->generatePass($appointment);
         });
         
-        return back();
+        return redirect()->route('admin.appointments.printpass');;
     }
 
     private function generatePass($appointment){
@@ -203,18 +203,17 @@ class AppointmentsController extends Controller
         abort_if(Gate::denies('appointment_printpass'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $appointment = Appointment::find($request->appointment_id);
         $gatePass = GatePass::where('ref',$request->ref)->first();
-
+        
         if(empty($request->ref) || is_null($request->ref)){
             $gatePass = $this->generatePass($appointment);
         }
        
         $fileName = $appointment->truck_details.' '.$appointment->created_at;
 
-        $qrCode = base64_encode(QrCode::format('svg')->size(256)->generate($gatePass->ref));
+        $qrCode = base64_encode(QrCode::format('svg')->size(256)->generate($request->ref));
 
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        //$logo_path = public_path('/images/AGL_LOGO.jfif');
         $pdf::SetCreator('YardMS');
         $pdf::SetAuthor('Your Company');
         $pdf::SetTitle('Invoice');

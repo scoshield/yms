@@ -8,24 +8,15 @@
        {{$gatePass->ref}}
     </div>
     
-    <div style="border-top:1px solid #000;">
-         <table style="line-height: 1.5;">
-            <tr>
-                <td>
-                    <div style="text-align: left;font-size: 24px;color: #666;">
-                        <img src="{{public_path('/images/AGL_LOGO.jfif')}}" width="200">
-                    </div>
-                </td>
-                <td style="text-align:right;">
-                    <div style="font-size: 18px;color: #666;">GATEPASS</div>
-                </td>
-            </tr>
-        </table>
+    <div style="text-align: left;border-top:1px solid #000;">
+        <div style="font-size: 24px;color: #666;">
+            <img src="" width="200">
+        </div>
     </div>
 
-    {{-- <div style="text-align: left;border-top:1px solid #000;">
+    <div style="text-align: left;border-top:1px solid #000;">
         <div style="font-size: 18px;color: #666;">GATEPASS</div>
-    </div> --}}
+    </div>
     
     <table style="line-height: 1.5;">
         <tr>

@@ -9,17 +9,19 @@
     </div>
     
     <div style="border-top:1px solid #000;">
+        <div style="text-align: left;font-size: 24px;color: #666;">
+            <img src="{{public_path('/images/AGL_LOGO.jfif')}}" width="200">
+        </div>
+         <div style="text-align: right;font-size: 24px;color: #666;">
+            <div style="font-size: 18px;color: #666;">GATEPASS</div>
+        </div>
+
          <table style="line-height: 1.5;">
-            <tr>
-                <td>
-                    <div style="text-align: left;font-size: 24px;color: #666;">
-                        <img src="{{public_path('/images/AGL_LOGO.jfif')}}" width="200">
-                    </div>
-                </td>
-                <td style="text-align:right;">
-                    <div style="font-size: 18px;color: #666;">GATEPASS</div>
-                </td>
-            </tr>
+        <tr>
+            <td><b>Time</b> {{$appointment->appointment_date}}</td>
+            
+            <td style="text-align:right;"><b>Yard:</b>{{$appointment->yard->name}}</td>
+        </tr>
         </table>
     </div>
 

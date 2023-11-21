@@ -35,11 +35,11 @@
         @if ($row->status == 'finished_loading')
             <form action="{{ route('admin.' . $crudRoutePart . '.printpass') }}" method="POST" style="display: inline-block;">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="appointment_id" value="{{$row->id}}">
-                <input type="hidden" name="pass_ref" value="{{@$row->gate_pass->ref}}">
+                <input type="hidden" name="id" value="{{$row->id}}">
+                <input type="hidden" name="ref" value="{{@$row->gate_pass->ref}}">
                 {{-- <input type="submit" class="btn btn-xs btn-default" value="{{ trans('global.gate_pass') }}"> --}}
                 <button type="submit" class="btn btn-xs btn-default">
-                    <i class="fa-fw fas fa-print nav-icon"></i> Print {{ trans('global.gate_pass') }}
+                    <i class="fa-fw fas fa-print nav-icon"></i> {{ trans('global.gate_pass') }}
                 </button>
             </form>
         @endif

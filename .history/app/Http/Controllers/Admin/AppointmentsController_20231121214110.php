@@ -188,7 +188,7 @@ class AppointmentsController extends Controller
             $this->generatePass($appointment);
         });
         
-        return back();
+        return redirect()->route('admin.appointments.printpass');;
     }
 
     private function generatePass($appointment){
@@ -214,7 +214,6 @@ class AppointmentsController extends Controller
 
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        //$logo_path = public_path('/images/AGL_LOGO.jfif');
         $pdf::SetCreator('YardMS');
         $pdf::SetAuthor('Your Company');
         $pdf::SetTitle('Invoice');

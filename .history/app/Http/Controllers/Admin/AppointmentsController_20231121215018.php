@@ -188,7 +188,7 @@ class AppointmentsController extends Controller
             $this->generatePass($appointment);
         });
         
-        return back();
+        return redirect()->route('admin.appointments.printpass');;
     }
 
     private function generatePass($appointment){

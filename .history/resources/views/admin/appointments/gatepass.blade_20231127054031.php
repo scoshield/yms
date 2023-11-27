@@ -80,17 +80,17 @@
         <img src="data:image/svg;base64,  {{$qrCode}}" width="100" style="margin-top:10px; left:50%">
     </div>
 
-    <br/><br/>
+    <br/>
         <table>
             <tr>
-                <td>____________________</td>
-                <td>____________________</td>
-                <td>____________________</td>
+                <td style="border:1px solid #ddd;"></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
-                <td><b>Authorised By: </b></td>
-                <td><b>Issued By: </b> {{Auth::user()->name}}</td>
-                <td><b>Received By: </b></td>
+                <td><b>Authorised By</b></td>
+                <td><b>Issued By: </b> {{Auth::user()->first_name}}</td>
+                <td><b>Received By</b></td>
             </tr>
         </table>
 

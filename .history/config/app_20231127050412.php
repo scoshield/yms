@@ -63,7 +63,6 @@ return [
         'pick_empty' => 'Pick Empty',
         'drop_empty' => 'Drop Empty',
         'strip' => 'Stip',
-        'cross_stuff' => 'Cross Stuff',
         'other' => 'Other',
     ),
 

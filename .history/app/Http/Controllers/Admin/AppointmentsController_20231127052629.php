@@ -230,7 +230,7 @@ class AppointmentsController extends Controller
         //$logo_path = public_path('/images/AGL_LOGO.jfif');
         $pdf::SetCreator('YardMS');
         $pdf::SetAuthor('Your Company');
-        $pdf::SetTitle('GatePass');
+        $pdf::SetTitle('Invoice');
 
         $pdf::setPrintHeader(false);
         $pdf::setPrintFooter(false);

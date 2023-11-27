@@ -42,6 +42,10 @@
             <td style="text-align:right;"><b>File No: </b>{{$appointment->file_number}}</td>
         </tr>
         <tr>
+            <td><b>Truck:</b> {{$appointment->truck_details}}</td>
+            <td style="text-align:right;"><b></b></td>
+        </tr>
+        <tr>
             <td><b>Container No:</b> {{$appointment->contact_details}}</td>
             <td style="text-align:right;"><b></b></td>
         </tr>
@@ -54,8 +58,6 @@
 
     <div></div>
     <div style="border-bottom:1px solid #000;">
-        <p>Please allow truck {{$appointment->truck_details}} {{$action}}</p>
-        <p><b>Purpose of Visit:</b> {{config('app.purpose_of_visit')[$appointment->purpose]}}</p>
         <table style="line-height: 2;">
             <thead>
                 <tr style="font-weight: bold;border:1px solid #cccccc;background-color:#f2f2f2;">
@@ -77,22 +79,9 @@
                     <td></td>
                 </tr>
         </table>
-        <img src="data:image/svg;base64,  {{$qrCode}}" width="100" style="margin-top:10px; left:50%">
+        <center><img src="data:image/svg;base64,  {{$qrCode}}" width="100" style="margin-top:10px; left:50%"></center>
+        
     </div>
-
-    <br/><br/>
-        <table>
-            <tr>
-                <td>____________________</td>
-                <td>____________________</td>
-                <td>____________________</td>
-            </tr>
-            <tr>
-                <td><b>Authorised By: </b></td>
-                <td><b>Issued By: </b> {{Auth::user()->name}}</td>
-                <td><b>Received By: </b></td>
-            </tr>
-        </table>
 
     {{-- <p>
         <u> Kindly make your payment to</u>:<br/>
@@ -101,5 +90,10 @@
             BIC: 23141434<br/>
     </p> --}}
 
+    <p><i>Issued By: {{Auth::user()->name}}</i></p>
+    Authorised By:____________________________
+Issued By:________________________________
+Loaded/Offloaded By:______________________
+Approved By: _____________________________
 </body>
 </html>

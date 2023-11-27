@@ -77,22 +77,9 @@
                     <td></td>
                 </tr>
         </table>
-        <img src="data:image/svg;base64,  {{$qrCode}}" width="100" style="margin-top:10px; left:50%">
+        <center><img src="data:image/svg;base64,  {{$qrCode}}" width="100" style="margin-top:10px; left:50%"></center>
+        
     </div>
-
-    <br/><br/>
-        <table>
-            <tr>
-                <td>____________________</td>
-                <td>____________________</td>
-                <td>____________________</td>
-            </tr>
-            <tr>
-                <td><b>Authorised By: </b></td>
-                <td><b>Issued By: </b> {{Auth::user()->name}}</td>
-                <td><b>Received By: </b></td>
-            </tr>
-        </table>
 
     {{-- <p>
         <u> Kindly make your payment to</u>:<br/>
@@ -101,5 +88,21 @@
             BIC: 23141434<br/>
     </p> --}}
 
+    <table>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><b>Authorised By</b></td>
+            <td><b>Issued By</b></td>
+            <td><b>Received By</b></td>
+        </tr>
+    </table>
+
+    <p><i><b>Authorised By: </b></i></p>
+    <p><i><b>Issued By:</b></i> {{Auth::user()->name}}</p>
+    <p><i><b>Received By: </b></i></p>
 </body>
 </html>

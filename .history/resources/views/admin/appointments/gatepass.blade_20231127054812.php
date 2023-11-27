@@ -88,9 +88,9 @@
                 <td>____________________</td>
             </tr>
             <tr>
-                <td><b>Authorised By: </b></td>
+                <td><b>Authorised By</b></td>
                 <td><b>Issued By: </b> {{Auth::user()->name}}</td>
-                <td><b>Received By: </b></td>
+                <td><b>Received By</b></td>
             </tr>
         </table>
 

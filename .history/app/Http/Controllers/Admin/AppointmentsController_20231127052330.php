@@ -209,17 +209,6 @@ class AppointmentsController extends Controller
         }
 
         $action = 'exit/enter';
-        // if(in_array($appointment->purpose,['loading'])){
-        //     $action = 'enter';
-        // }
-
-        // 'loading' => 'Loading',
-        // 'offloading' => 'Off loading',
-        // 'offloading_and_loading' => 'Off loading & loading',
-        // 'pick_empty' => 'Pick Empty',
-        // 'drop_empty' => 'Drop Empty',
-        // 'strip' => 'Stip',
-        // 'cross_stuff' => 'Cross Stuff',
        
         $fileName = $appointment->truck_details.' '.$appointment->created_at;
 
@@ -230,7 +219,7 @@ class AppointmentsController extends Controller
         //$logo_path = public_path('/images/AGL_LOGO.jfif');
         $pdf::SetCreator('YardMS');
         $pdf::SetAuthor('Your Company');
-        $pdf::SetTitle('GatePass');
+        $pdf::SetTitle('Invoice');
 
         $pdf::setPrintHeader(false);
         $pdf::setPrintFooter(false);

@@ -208,10 +208,10 @@ class AppointmentsController extends Controller
             $gatePass = $this->generatePass($appointment);
         }
 
-        $action = 'exit/enter';
-        // if(in_array($appointment->purpose,['loading'])){
-        //     $action = 'enter';
-        // }
+        $action = 'exit';
+        if(in_array($appointment->purpose,[])){
+            $action = 'enter';
+        }
 
         // 'loading' => 'Loading',
         // 'offloading' => 'Off loading',
@@ -230,7 +230,7 @@ class AppointmentsController extends Controller
         //$logo_path = public_path('/images/AGL_LOGO.jfif');
         $pdf::SetCreator('YardMS');
         $pdf::SetAuthor('Your Company');
-        $pdf::SetTitle('GatePass');
+        $pdf::SetTitle('Invoice');
 
         $pdf::setPrintHeader(false);
         $pdf::setPrintFooter(false);

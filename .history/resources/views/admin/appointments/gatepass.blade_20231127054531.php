@@ -83,14 +83,14 @@
     <br/><br/>
         <table>
             <tr>
-                <td>____________________</td>
-                <td>____________________</td>
-                <td>____________________</td>
+                <td><p style="border-bottom:1px solid black;width:80%"></p></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
-                <td><b>Authorised By: </b></td>
+                <td><b>Authorised By</b></td>
                 <td><b>Issued By: </b> {{Auth::user()->name}}</td>
-                <td><b>Received By: </b></td>
+                <td><b>Received By</b></td>
             </tr>
         </table>
 

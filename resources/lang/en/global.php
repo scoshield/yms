@@ -11,7 +11,8 @@ return [
     'delete'                               => 'Delete',
     'admit'                                => 'Admit',
     'start'                                => 'Start',
-    'finish'                                => 'Finish',
+    'finish'                               => 'Finish',
+    'checkout'                             => 'Checkout',
     'downloadFile'                         => 'Download file',
     'edit'                                 => 'Edit',
     'emailVerificationSuccess'             => 'User email verified successfully',
@@ -251,7 +252,5 @@ return [
     'no_alerts'                            => 'No alerts',
     'calendar'                             => 'Calendar',
     'messenger'                            => 'Messenger',
-
-
     'inventory'                            => 'Inventory',
 ];

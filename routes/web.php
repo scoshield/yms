@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Route;
 
 define('BASE_URL', env('APP_URL'));
 
-Route::redirect('/', BASE_URL.'/login');
-Route::redirect('/home', BASE_URL.'/admin');
+Route::redirect('/', BASE_URL . '/login');
+Route::redirect('/home', BASE_URL . '/admin');
 Auth::routes(['register' => false]);
 
 // Profile Routes
@@ -76,5 +76,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Inventory items
     Route::delete('inventory_items/destroy', 'InventoryItemController@massDestroy')->name('inventory_items.massDestroy');
     Route::post('inventory_items/media', 'InventoryItemController@storeMedia')->name('inventory_items.storeMedia');
+    Route::post('inventory_item/checkout', 'InventoryItemController@checkout')->name('inventory_items.checkout');
     Route::resource('inventory_items', 'InventoryItemController');
 });

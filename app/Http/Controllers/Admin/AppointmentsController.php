@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyAppointmentRequest;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
+use App\InventoryItem;
 use App\LoadingBay;
 use App\Service;
 use App\Yard;
@@ -26,7 +27,7 @@ class AppointmentsController extends Controller
     {
         if ($request->ajax()) {
             $query = Appointment::with(['hauler', 'creator', 'yard'])
-            ->select(sprintf('%s.*', (new Appointment)->table));
+                ->select(sprintf('%s.*', (new Appointment)->table));
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -103,9 +104,10 @@ class AppointmentsController extends Controller
 
         $haulers = Hauler::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
         $yards = Yard::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $inventory_items = InventoryItem::all()->pluck('ref', 'id')->prepend(trans('global.pleaseSelect'), '');
         $purposes = config('app.purpose_of_visit');
 
-        return view('admin.appointments.create', compact('haulers', 'yards', 'purposes'));
+        return view('admin.appointments.create', compact('haulers', 'yards', 'purposes', 'inventory_items'));
     }
 
     public function store(StoreAppointmentRequest $request)
@@ -132,8 +134,9 @@ class AppointmentsController extends Controller
         $yards = Yard::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
         $purposes = config('app.purpose_of_visit');
         $appointment->load('hauler', 'yard', 'creator');
+        $inventory_items = InventoryItem::all()->pluck('ref', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.appointments.edit', compact('haulers', 'yards', 'purposes', 'appointment'));
+        return view('admin.appointments.edit', compact('haulers', 'yards', 'purposes', 'appointment', 'inventory_items'));
     }
 
     public function update(UpdateAppointmentRequest $request, Appointment $appointment)
@@ -165,18 +168,18 @@ class AppointmentsController extends Controller
     public function admit(Request $request)
     {
         abort_if(Gate::denies('appointment_admit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-       
-        DB::transaction(function() use ($request) {
+
+        DB::transaction(function () use ($request) {
             $appointment = Appointment::find($request->id);
             $appointment->update(['status' => 'admitted']);
-            
+
             LoadingBay::create([
                 'ref' => uniqid("dck", true),
                 'appointment_id' => $appointment->id,
                 'type' => $appointment->purpose
             ]);
         });
-        
+
         return back();
     }
 

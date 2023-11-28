@@ -35,6 +35,7 @@ class Appointment extends Model
         'contact_details',
         'file_number',
         'container_number',
+        'inventory_item_id',
         'status',
         'comments',
         'created_at',

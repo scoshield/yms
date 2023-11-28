@@ -2,14 +2,14 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            {{ trans('global.edit') }} {{ trans('cruds.appointment.title_singular') }}
+            {{ trans('global.create') }} {{ trans('cruds.appointment.title_singular') }}
         </div>
 
         <div class="card-body">
-            <form action="{{ route('admin.appointments.update', [$appointment->id]) }}" method="POST"
-                enctype="multipart/form-data">
+
+            <form action="{{ route('admin.appointments.store') }}" method="POST" enctype="multipart/form-data">
+
                 @csrf
-                @method('PUT')
 
                 <div class="row">
                     <div class="form-group col-md-6 {{ $errors->has('hauler_id') ? 'has-error' : '' }}">
@@ -28,12 +28,12 @@
                         @endif
                     </div>
 
-                    <div class="form-group col-md-6 {{ $errors->has('purpose') ? 'has-error' : '' }}">
+                    {{-- <div class="form-group col-md-6 {{ $errors->has('purpose') ? 'has-error' : '' }}">
                         <label for="purpose">{{ trans('cruds.appointment.fields.purpose') }}*</label>
                         <select name="purpose" id="purpose" class="form-control select2" required>
                             @foreach ($purposes as $id => $purpose)
                                 <option value="{{ $id }}"
-                                    {{ (isset($appointment) && $appointment->purpose ? $appointment->purpose : old('purpose')) == $id ? 'selected' : '' }}>
+                                    {{ (isset($appointment) && $appointment->purpose ? $appointment->purpose->id : old('purpose')) == $id ? 'selected' : '' }}>
                                     {{ $purpose }}
                                 </option>
                             @endforeach
@@ -43,25 +43,20 @@
                                 {{ $errors->first('purpose_id') }}
                             </em>
                         @endif
+                    </div> --}}
+                    <input type="hidden" name="purpose" value="loading">
+
+                    <div class="col-md-6 form-group {{ $errors->has('yard_id') ? 'has-error' : '' }}">
+                        <label for="yard">{{ trans('cruds.appointment.fields.yard') }} *</label>
+                        <p>{{ $inventory_item->yard->name }}</p>
+                        <input type="hidden" name="yard_id" value="{{ $inventory_item->yard_id }}">
+                        @if ($errors->has('yard_id'))
+                            <em class="invalid-feedback">
+                                {{ $errors->first('yard_id') }}
+                            </em>
+                        @endif
                     </div>
                 </div>
-
-                <div class="form-group {{ $errors->has('yard_id') ? 'has-error' : '' }}">
-                    <label for="yard">{{ trans('cruds.appointment.fields.yard') }} *</label>
-                    <select name="yard_id" id="yard" class="form-control select2">
-                        @foreach ($yards as $id => $yard)
-                            <option value="{{ $id }}"
-                                {{ (isset($appointment) && $appointment->yard ? $appointment->yard->id : old('employee_id')) == $id ? 'selected' : '' }}>
-                                {{ $yard }}</option>
-                        @endforeach
-                    </select>
-                    @if ($errors->has('yard_id'))
-                        <em class="invalid-feedback">
-                            {{ $errors->first('yard_id') }}
-                        </em>
-                    @endif
-                </div>
-
                 <div class="row">
                     <div class="form-group col-md-6 {{ $errors->has('appointment_date') ? 'has-error' : '' }}">
                         <label for="appointment_date">
@@ -100,19 +95,8 @@
                         <label for="inventory_item_id">
                             {{ trans('cruds.appointment.fields.inventory_item_id') }} / Container
                         </label>
-
-                        <select name="inventory_item_id" id="inventory_item_id" class="form-control select2">
-                            @foreach ($inventory_items as $id => $inventory_item)
-                                <option value="{{ $id }}"
-                                    {{ (isset($appointment) && $appointment->inventory_id
-                                        ? $appointment->inventory_item->id
-                                        : old('inventory_item_id')) == $id
-                                        ? 'selected'
-                                        : '' }}>
-                                    {{ $inventory_item }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <p>{{ ucfirst($inventory_item->category) }} {{ $inventory_item->ref }}</p>
+                        <input type="hidden" name="inventory_item_id" value="{{ $inventory_item->id }}">
 
                         @if ($errors->has('inventory_item_id'))
                             <em class="invalid-feedback">

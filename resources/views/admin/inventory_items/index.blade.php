@@ -96,6 +96,12 @@
                 serverSide: true,
                 retrieve: true,
                 aaSorting: [],
+                "columnDefs": [{
+                    "targets": [10, 11, 12],
+                    "visible": false,
+                    "searchable": false
+                }],
+                scrollX: true,
                 ajax: "{{ route('admin.inventory_items.index') }}",
                 columns: [{
                         data: 'placeholder',

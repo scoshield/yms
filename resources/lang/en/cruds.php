@@ -190,7 +190,7 @@ return [
             'deleted_at'        => 'Deleted at',
             'deleted_at_helper' => '',
         ],
-    ],    
+    ],
     'loadingbay'         => [
         'title'          => 'Loading Bay',
         'title_singular' => 'Loading Bay',
@@ -260,6 +260,8 @@ return [
             'file_number_helper'    => '',
             'container_number'           => 'Container No.',
             'container_number_helper'    => '',
+            'inventory_item_id'           => 'Inventory Item.',
+            'inventory_item_id_helper'           => '',
             'status'           => 'Status',
             'status_helper'    => '',
 
@@ -310,7 +312,7 @@ return [
             'cnumbers_visible'              => 'C Numbers Visible',
             'cnumbers_visible_helper'       => '',
 
-            'year_manufactured'             => 'Year Manufactured',
+            'year_manufactured'             => 'Year of Mnf',
             'year_manufactured_helper'      => '',
             'type'                          => 'Type',
             'type_helper'                   => '',

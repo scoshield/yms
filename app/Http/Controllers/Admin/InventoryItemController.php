@@ -14,6 +14,11 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
+use App\Client;
+use App\Hauler;
+use App\Employee;
+use App\Service;
+
 
 class InventoryItemController extends Controller
 {
@@ -34,12 +39,14 @@ class InventoryItemController extends Controller
                 $editGate      = 'inventory_item_edit';
                 $deleteGate    = 'inventory_item_delete';
                 $crudRoutePart = 'inventory_items';
+                $checkoutInventoryItemGate  = 'checkout_inventory_item';
 
                 return view('partials.datatablesActions', compact(
                     'viewGate',
                     'editGate',
                     'deleteGate',
                     'crudRoutePart',
+                    'checkoutInventoryItemGate',
                     'row'
                 ));
             });
@@ -161,6 +168,27 @@ class InventoryItemController extends Controller
         abort_if(Gate::denies('inventory_item_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return view('admin.inventory_items.show', compact('inventory_item'));
+    }
+
+    public function checkout(Request $request)
+    {
+        abort_if(Gate::denies('checkout_inventory_item'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $clients = Client::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $employees = Employee::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $services = Service::all()->pluck('name', 'id');
+
+        $haulers = Hauler::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $yards = Yard::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $inventory_items = InventoryItem::all()->pluck('ref', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $purposes = config('app.purpose_of_visit');
+
+        $inventory_item = InventoryItem::find($request->id);
+        //dd($inventory_item);
+
+        return view('admin.inventory_items.checkout', compact('inventory_item', 'haulers', 'yards', 'purposes', 'inventory_items'));
     }
 
     public function destroy(InventoryItem $inventory_item)

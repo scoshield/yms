@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddStatusToLoadingBayTable extends Migration
+class CreateCheckoutsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AddStatusToLoadingBayTable extends Migration
      */
     public function up()
     {
-        Schema::table('loading_bay', function (Blueprint $table) {
-            $table->string('status', 50)->default('waiting');
+        Schema::create('checkouts', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
         });
     }
 
@@ -25,8 +26,6 @@ class AddStatusToLoadingBayTable extends Migration
      */
     public function down()
     {
-        Schema::table('loading_bay', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
+        Schema::dropIfExists('checkouts');
     }
 }

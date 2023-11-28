@@ -10,9 +10,11 @@ return [
     'dashboard'                            => 'Dashboard',
     'delete'                               => 'Delete',
     'admit'                                => 'Admit',
+    'gate_pass'                           => 'Gate Pass',
     'start'                                => 'Start',
     'finish'                               => 'Finish',
     'checkout'                             => 'Checkout',
+
     'downloadFile'                         => 'Download file',
     'edit'                                 => 'Edit',
     'emailVerificationSuccess'             => 'User email verified successfully',

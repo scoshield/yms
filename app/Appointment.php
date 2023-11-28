@@ -14,12 +14,15 @@ class Appointment extends Model
     public $table = 'appointments';
 
     protected $dates = [
-        // 'start_time',
         'appointment_date',
         'created_at',
         'updated_at',
         'deleted_at',
-        // 'finish_time',
+    ];
+
+    protected $casts = [
+        'appointment_date' => 'date:d/m/y  H:i A',
+        'created_at' => 'date:d/m/y  H:i A',
     ];
 
     protected $fillable = [
@@ -70,5 +73,9 @@ class Appointment extends Model
 
     public function loading_bay_session(){
         return $this->hasOne(LoadingBay::class, 'appointment_id');
+    }
+
+    public function gate_pass(){
+        return $this->hasOne(GatePass::class, 'appointment_id');
     }
 }

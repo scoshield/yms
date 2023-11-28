@@ -11,6 +11,8 @@
 
                 @csrf
 
+                <input type="hidden" name="status" value="finished_loading">
+
                 <div class="row">
                     <div class="form-group col-md-6 {{ $errors->has('hauler_id') ? 'has-error' : '' }}">
                         <label for="hauler">{{ trans('cruds.appointment.fields.hauler') }}*</label>

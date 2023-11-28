@@ -186,7 +186,8 @@ class InventoryItemController extends Controller
         $purposes = config('app.purpose_of_visit');
 
         $inventory_item = InventoryItem::find($request->id);
-        //dd($inventory_item);
+        $inventory_item->status = 'checked_out';
+        $inventory_item->update();
 
         return view('admin.inventory_items.checkout', compact('inventory_item', 'haulers', 'yards', 'purposes', 'inventory_items'));
     }

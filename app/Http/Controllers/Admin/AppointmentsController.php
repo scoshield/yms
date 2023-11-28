@@ -20,13 +20,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\GatePass;
+use Illuminate\Support\Str;
+use Elibyy\TCPDF\Facades\TCPDF;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AppointmentsController extends Controller
 {
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = Appointment::with(['hauler', 'creator', 'yard'])
+            $query = Appointment::with(['hauler', 'creator', 'yard','gate_pass'])
                 ->select(sprintf('%s.*', (new Appointment)->table));
             $table = Datatables::of($query);
 
@@ -38,6 +42,7 @@ class AppointmentsController extends Controller
                 $editGate      = 'appointment_edit';
                 $deleteGate    = 'appointment_delete';
                 $admitAppointmentGate = 'appointment_admit';
+                $printPassAppointmentGate = 'appointment_printpass';
                 $crudRoutePart = 'appointments';
 
                 return view('partials.datatablesActions', compact(
@@ -45,6 +50,7 @@ class AppointmentsController extends Controller
                     'editGate',
                     'deleteGate',
                     'admitAppointmentGate',
+                    'printPassAppointmentGate',
                     'crudRoutePart',
                     'row'
                 ));
@@ -169,18 +175,90 @@ class AppointmentsController extends Controller
     {
         abort_if(Gate::denies('appointment_admit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        DB::transaction(function () use ($request) {
+        $gatePass = null;
+        DB::transaction(function() use ($request) {
             $appointment = Appointment::find($request->id);
             $appointment->update(['status' => 'admitted']);
+            $appointment->update(['admitted_at' => date('Y-m-d H:i:s')]);
+            $appointment->update(['admitted_by' => Auth::id()]);
 
             LoadingBay::create([
-                'ref' => uniqid("dck", true),
+                'ref' => Str::uuid()->toString(),
                 'appointment_id' => $appointment->id,
                 'type' => $appointment->purpose
             ]);
+
+            $this->generatePass($appointment);
         });
 
         return back();
+    }
+
+    private function generatePass($appointment){
+        return GatePass::updateOrCreate(['appointment_id' => $appointment->id],[
+            'ref' => Str::uuid()->toString(),
+            'appointment_id' => $appointment->id,
+            'created_by' => Auth::id()
+        ]);
+    }
+
+    public function printPass(Request $request){
+        abort_if(Gate::denies('appointment_printpass'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $appointment = Appointment::find($request->appointment_id);
+        $gatePass = GatePass::where('ref',$request->ref)->first();
+
+        if(empty($request->ref) || is_null($request->ref)){
+            $gatePass = $this->generatePass($appointment);
+        }
+
+        $action = 'exit/enter';
+        // if(in_array($appointment->purpose,['loading'])){
+        //     $action = 'enter';
+        // }
+
+        // 'loading' => 'Loading',
+        // 'offloading' => 'Off loading',
+        // 'offloading_and_loading' => 'Off loading & loading',
+        // 'pick_empty' => 'Pick Empty',
+        // 'drop_empty' => 'Drop Empty',
+        // 'strip' => 'Stip',
+        // 'cross_stuff' => 'Cross Stuff',
+       
+        $fileName = $appointment->truck_details.' '.$appointment->created_at;
+
+        $qrCode = base64_encode(QrCode::format('svg')->size(256)->generate($gatePass->ref));
+
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+        //$logo_path = public_path('/images/AGL_LOGO.jfif');
+        $pdf::SetCreator('YardMS');
+        $pdf::SetAuthor('Your Company');
+        $pdf::SetTitle('GatePass');
+
+        $pdf::setPrintHeader(false);
+        $pdf::setPrintFooter(false);
+
+        $pdf::AddPage();
+
+        $pdf::SetFont('helvetica', '', 12);
+
+        $data = [
+            'title' => 'Generate PDF using Laravel TCPDF - ItSolutionStuff.com!',
+            'gatePass' => $gatePass,
+            'appointment' => $appointment,
+            'qrCode'=>$qrCode,
+            'action'=>$action
+        ];
+
+        $html = view()->make('admin.appointments.gatepass', $data)->render();
+
+        $pdf::writeHTML($html, true, false, true, false, '');
+
+        $pdf::Output($fileName, 'I');
+
+        //$pdf::writeHTML($html, true, false, true, false, '');
+        //$pdf::Output(public_path($filename), 'F');
+        //return response()->download(public_path($filename));
     }
 
     public function massDestroy(MassDestroyAppointmentRequest $request)
@@ -189,4 +267,5 @@ class AppointmentsController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+
 }

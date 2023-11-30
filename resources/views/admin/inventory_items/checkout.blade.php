@@ -12,6 +12,7 @@
                 @csrf
 
                 <input type="hidden" name="status" value="finished_loading">
+                <input type="hidden" name="checking_out_inventory_item_id" value="{{$inventory_item->id}}">
 
                 <div class="row">
                     <div class="form-group col-md-6 {{ $errors->has('hauler_id') ? 'has-error' : '' }}">

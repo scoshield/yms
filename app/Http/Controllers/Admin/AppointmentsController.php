@@ -30,7 +30,7 @@ class AppointmentsController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = Appointment::with(['hauler', 'creator', 'yard','gate_pass'])
+            $query = Appointment::with(['hauler', 'creator', 'yard', 'gate_pass'])
                 ->select(sprintf('%s.*', (new Appointment)->table));
             $table = Datatables::of($query);
 
@@ -125,6 +125,15 @@ class AppointmentsController extends Controller
 
         $appointment = Appointment::create($request->all());
         $appointment->services()->sync($request->input('services', []));
+
+        if (isset($request->checking_out_inventory_item_id)) {
+            $inventory_item = InventoryItem::find($request->checking_out_inventory_item_id);
+            $inventory_item->status = 'checked_out';
+            $inventory_item->checked_out = true;
+            $inventory_item->update();
+            return redirect()->route('admin.inventory_items.index');
+        }
+
         return redirect()->route('admin.appointments.index');
     }
 
@@ -176,7 +185,7 @@ class AppointmentsController extends Controller
         abort_if(Gate::denies('appointment_admit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $gatePass = null;
-        DB::transaction(function() use ($request) {
+        DB::transaction(function () use ($request) {
             $appointment = Appointment::find($request->id);
             $appointment->update(['status' => 'admitted']);
             $appointment->update(['admitted_at' => date('Y-m-d H:i:s')]);
@@ -194,20 +203,22 @@ class AppointmentsController extends Controller
         return back();
     }
 
-    private function generatePass($appointment){
-        return GatePass::updateOrCreate(['appointment_id' => $appointment->id],[
+    private function generatePass($appointment)
+    {
+        return GatePass::updateOrCreate(['appointment_id' => $appointment->id], [
             'ref' => Str::uuid()->toString(),
             'appointment_id' => $appointment->id,
             'created_by' => Auth::id()
         ]);
     }
 
-    public function printPass(Request $request){
+    public function printPass(Request $request)
+    {
         abort_if(Gate::denies('appointment_printpass'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $appointment = Appointment::find($request->appointment_id);
-        $gatePass = GatePass::where('ref',$request->ref)->first();
+        $gatePass = GatePass::where('ref', $request->ref)->first();
 
-        if(empty($request->ref) || is_null($request->ref)){
+        if (empty($request->ref) || is_null($request->ref)) {
             $gatePass = $this->generatePass($appointment);
         }
 
@@ -223,8 +234,8 @@ class AppointmentsController extends Controller
         // 'drop_empty' => 'Drop Empty',
         // 'strip' => 'Stip',
         // 'cross_stuff' => 'Cross Stuff',
-       
-        $fileName = $appointment->truck_details.' '.$appointment->created_at;
+
+        $fileName = $appointment->truck_details . ' ' . $appointment->created_at;
 
         $qrCode = base64_encode(QrCode::format('svg')->size(256)->generate($gatePass->ref));
 
@@ -246,8 +257,8 @@ class AppointmentsController extends Controller
             'title' => 'Generate PDF using Laravel TCPDF - ItSolutionStuff.com!',
             'gatePass' => $gatePass,
             'appointment' => $appointment,
-            'qrCode'=>$qrCode,
-            'action'=>$action
+            'qrCode' => $qrCode,
+            'action' => $action
         ];
 
         $html = view()->make('admin.appointments.gatepass', $data)->render();
@@ -267,5 +278,4 @@ class AppointmentsController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
-
 }

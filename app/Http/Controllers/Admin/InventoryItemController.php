@@ -184,11 +184,7 @@ class InventoryItemController extends Controller
         $yards = Yard::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
         $inventory_items = InventoryItem::all()->pluck('ref', 'id')->prepend(trans('global.pleaseSelect'), '');
         $purposes = config('app.purpose_of_visit');
-
         $inventory_item = InventoryItem::find($request->id);
-        $inventory_item->status = 'checked_out';
-        $inventory_item->update();
-
         return view('admin.inventory_items.checkout', compact('inventory_item', 'haulers', 'yards', 'purposes', 'inventory_items'));
     }
 

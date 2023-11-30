@@ -96,7 +96,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="form-group col-md-6 {{ $errors->has('inventory_item_id') ? 'has-error' : '' }}">
+                    {{-- <div class="form-group col-md-6 {{ $errors->has('inventory_item_id') ? 'has-error' : '' }}">
                         <label for="inventory_item_id">
                             {{ trans('cruds.appointment.fields.inventory_item_id') }} / Container
                         </label>
@@ -121,6 +121,20 @@
                         @endif
                         <p class="helper-block">
                             {{ trans('cruds.appointment.fields.inventory_item_id_helper') }}
+                        </p>
+                    </div> --}}
+
+                    <div class="form-group col-md-6 {{ $errors->has('container_number') ? 'has-error' : '' }}">
+                        <label for="container_number">{{ trans('cruds.appointment.fields.container_number') }}</label>
+                        <input type="text" id="container_number" name="container_number" class="form-control"
+                            value="{{ old('container_number', isset($appointment) ? $appointment->container_number : '') }}">
+                        @if ($errors->has('container_number'))
+                            <em class="invalid-feedback">
+                                {{ $errors->first('container_number') }}
+                            </em>
+                        @endif
+                        <p class="helper-block">
+                            {{ trans('cruds.appointment.fields.container_number_helper') }}
                         </p>
                     </div>
 

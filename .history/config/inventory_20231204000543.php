@@ -2,7 +2,7 @@
 return [
     'categories' => [
         'container' => 'Container',
-        // 'tanker' => 'Tanktainer',
+        'tanker' => 'Tanktainer',
         'vehicle' => 'Vahicle',
         'unit' => 'Unit',
         'package' => 'Package',

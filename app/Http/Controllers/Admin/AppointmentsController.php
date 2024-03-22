@@ -12,6 +12,7 @@ use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
 use App\InventoryItem;
 use App\LoadingBay;
+use App\Notifications\AppointmentCreated;
 use App\Service;
 use App\Yard;
 use Gate;
@@ -21,8 +22,11 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\GatePass;
+use App\Notifications\AppointmentNotification;
+use App\User;
 use Illuminate\Support\Str;
 use Elibyy\TCPDF\Facades\TCPDF;
+use Illuminate\Support\Facades\Notification;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AppointmentsController extends Controller
@@ -133,6 +137,10 @@ class AppointmentsController extends Controller
             $inventory_item->update();
             return redirect()->route('admin.inventory_items.index');
         }
+        // $supervisors = User::whereHas()
+        //notify users
+        $users = User::where('yard_id', $appointment->yard_id)->get();
+        Notification::send($users, new AppointmentNotification($appointment, 1));
 
         return redirect()->route('admin.appointments.index');
     }
@@ -277,5 +285,24 @@ class AppointmentsController extends Controller
         Appointment::whereIn('id', request('ids'))->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    public function approveAtLevel(Request $request)
+    {
+        $ref = $request->ref;
+        $level = $request->level;
+
+        $appointment = DB::select('select * from appointments where sha1(id) = ?', [$ref]);
+
+        switch ($level) {
+            case sha1(1): // level 1 
+                break;
+            case sha1(2): //  level 2
+                break;
+            case sha1(3): //  level 1 
+                break;
+        }
+
+        dd($appointment);
     }
 }

@@ -17,7 +17,7 @@ class AppointmentNotification extends Notification
     public $action_tag = "Approve";
     public $action_url;
     public $message;
-    public $title;
+    public $subject;
 
     /**
      * Create a new notification instance.
@@ -28,31 +28,43 @@ class AppointmentNotification extends Notification
     {
         //There are 3 Approval levels level one is the supervisor level 2 head of department level 3 security
         $this->action_url = url('/appointments/approve', ['ref' => sha1($appointment->id), 'level' => sha1($level)]);
-        
+        $purpose = config('appointment.purpose')[$appointment->purpose];
+
         switch ($level) {
-            case 1:
-                $this->title = "Action on appointment required";
-                $this->message = "Your action is required for the appointment below:<br/>";
+            case 1: //Hod
+                $this->message = (new MailMessage)
+                    ->subject('H.O.D Approval required for Appointment #' . $appointment->id)
+                    ->greeting('Hello!')
+                    ->line(
+                        '
+                        Your approval is required for an ' . $purpose . ' appointment  scheduled for ' . $appointment->appointment_date . '.
+                        Hauler: ' . $appointment->hauler->name . ', 
+                        Driver: ' . $appointment->driver_name . ', 
+                        Truck Registration Number: ' . $appointment->truck_details
+                    )->action($this->action_tag, $this->action_url);
+
                 break;
-            case 2:
-                $this->title = "Action on appointment required";
-                $this->message = "Your action is required for the appointment below:<br/>";
+            case 2: // Security
+                $this->message = (new MailMessage)
+                    ->subject('Security Approval required for Appointment #' . $appointment->id)
+                    ->greeting('Hello!')
+                    ->line(
+                        '
+                        Your approval is required for an ' . $purpose . ' appointment  scheduled for ' . $appointment->appointment_date . '.
+                        Hauler: ' . $appointment->hauler->name . ',
+                        Driver: ' . $appointment->driver_name . ',
+                        Truck Registration Number: ' . $appointment->truck_details
+                    )->action($this->action_tag, $this->action_url);
+
                 break;
-            case 3:
-                $this->title = "Action on appointment required";
-                $this->message = "Your action is required for the appointment below:<br/>";
-                break;
+                // case 3:
+                //     $this->subject = "Action on appointment required";
+                //     $this->message = "Your action is required for the appointment below:<br/>";
+                //     break;
             default:
                 // do nothing
                 break;
         }
-
-        $this->message .="
-            Hauler: $appointment->hauler <br/>
-            Driver Name: $appointment->driver_name  <br/>
-            Truck Registration: $appointment->truck_details <br/>
-            Date/Time: $appointment->start_time
-        ";
     }
 
     /**
@@ -74,10 +86,7 @@ class AppointmentNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-            ->line($this->title)
-            ->action($this->action_tag, $this->action_url)
-            ->line($this->message);
+        return $this->message;
     }
 
     /**

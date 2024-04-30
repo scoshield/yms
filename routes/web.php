@@ -46,6 +46,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Appointments
     Route::post('appointments/admit', 'AppointmentsController@admit')->name('appointments.admit');
+    Route::post('appointments/approve', 'AppointmentsController@approve')->name('appointments.approve');
     Route::post('appointments/printpass', 'AppointmentsController@printpass')->name('appointments.printpass');
     Route::get('appointments/approve/{ref}/{level}', 'AppointmentsController@approveAtLevel')->name('appointments.approval');
     Route::delete('appointments/destroy', 'AppointmentsController@massDestroy')->name('appointments.massDestroy');

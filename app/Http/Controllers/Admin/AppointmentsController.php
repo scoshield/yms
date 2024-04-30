@@ -2,37 +2,38 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Appointment;
+
+use App\Events\AppointmentApproved;
+use Gate;
 use App\Client;
-use App\Employee;
 use App\Hauler;
+use App\Employee;
+use App\Appointment;
 use App\Http\Controllers\Controller;
+use App\Events\AppointmentCreatedEvent;
 use App\Http\Requests\MassDestroyAppointmentRequest;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
 use App\InventoryItem;
 use App\LoadingBay;
-use App\Notifications\AppointmentCreated;
 use App\Service;
 use App\Yard;
-use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\GatePass;
-use App\Notifications\AppointmentNotification;
-use App\User;
 use Illuminate\Support\Str;
 use Elibyy\TCPDF\Facades\TCPDF;
-use Illuminate\Support\Facades\Notification;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AppointmentsController extends Controller
 {
     public function index(Request $request)
     {
+        //dd($request->user()->can('grant_hod_approval'));
+        //dd(Auth::user());
         if ($request->ajax()) {
             $query = Appointment::with(['hauler', 'creator', 'yard', 'gate_pass'])
                 ->select(sprintf('%s.*', (new Appointment)->table));
@@ -46,6 +47,8 @@ class AppointmentsController extends Controller
                 $editGate      = 'appointment_edit';
                 $deleteGate    = 'appointment_delete';
                 $admitAppointmentGate = 'appointment_admit';
+                $hodAppointmentGate = 'grant_hod_approval';
+                $securityAppointmentGate = 'grant_security_approval';
                 $printPassAppointmentGate = 'appointment_printpass';
                 $crudRoutePart = 'appointments';
 
@@ -53,6 +56,8 @@ class AppointmentsController extends Controller
                     'viewGate',
                     'editGate',
                     'deleteGate',
+                    'hodAppointmentGate',
+                    'securityAppointmentGate',
                     'admitAppointmentGate',
                     'printPassAppointmentGate',
                     'crudRoutePart',
@@ -77,11 +82,15 @@ class AppointmentsController extends Controller
             });
 
             $table->editColumn('purpose', function ($row) {
-                return $row->purpose ? $row->purpose : "";
+                return $row->purpose ? config('appointment.purpose')[$row->purpose] : "";
             });
 
             $table->editColumn('comments', function ($row) {
                 return $row->comments ? $row->comments : "";
+            });
+
+            $table->editColumn('status', function ($row) {
+                return $row->status ? config('appointment.status')[$row->status] : "";
             });
 
             // $table->editColumn('services', function ($row) {
@@ -139,8 +148,7 @@ class AppointmentsController extends Controller
         }
         // $supervisors = User::whereHas()
         //notify users
-        $users = User::where('yard_id', $appointment->yard_id)->get();
-        Notification::send($users, new AppointmentNotification($appointment, 1));
+        event(new AppointmentCreatedEvent($appointment));
 
         return redirect()->route('admin.appointments.index');
     }
@@ -208,6 +216,20 @@ class AppointmentsController extends Controller
             $this->generatePass($appointment);
         });
 
+        return back();
+    }
+
+    public function approve(Request $request)
+    {
+        if (!$request->user()->can('grant_hod_approval')) {
+            abort(403);
+        }
+
+        $appointment = Appointment::find($request->id);
+        $appointment->update(['status' => $request->approval_type . '_approved']);
+        $appointment->update([$request->approval_type . '_approved_at' => date('Y-m-d H:i:s')]);
+        $appointment->update([$request->approval_type . '_approved_by' => Auth::id()]);
+        event(new AppointmentApproved($appointment));
         return back();
     }
 

@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\AppointmentApproved;
+use App\Events\AppointmentCreatedEvent;
+use App\Listeners\AppointmentApprovedListener;
+use App\Listeners\AppointmentCreatedListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -18,6 +22,12 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        AppointmentCreatedEvent::class => [
+            AppointmentCreatedListener::class
+        ],
+        AppointmentApproved::class => [
+            AppointmentApprovedListener::class
+        ]
     ];
 
     /**

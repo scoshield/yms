@@ -19,9 +19,37 @@
     </form>
 @endcan
 
+@if (isset($hodAppointmentGate))
+    @can($hodAppointmentGate)
+        @if ($row->status == 'pending')
+            <form action="{{ route('admin.' . $crudRoutePart . '.approve') }}" method="POST"
+                onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="id" value="{{ $row->id }}">
+                <input type="hidden" name='approval_type' value="hod" />
+                <input type="submit" class="btn btn-xs btn-dark" value="{{ trans('global.hod_approve') }}">
+            </form>
+        @endif
+    @endcan
+@endif
+
+@if (isset($securityAppointmentGate))
+    @can($securityAppointmentGate)
+        @if ($row->status == 'hod_approved')
+            <form action="{{ route('admin.' . $crudRoutePart . '.approve') }}" method="POST"
+                onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="id" value="{{ $row->id }}">
+                <input type="hidden" name='approval_type' value="security" />
+                <input type="submit" class="btn btn-xs btn-dark" value="{{ trans('global.security_approve') }}">
+            </form>
+        @endif
+    @endcan
+@endif
+
 @if (isset($admitAppointmentGate))
     @can($admitAppointmentGate)
-        @if ($row->status == 'pending')
+        @if ($row->status == 'security_approved')
             <form action="{{ route('admin.' . $crudRoutePart . '.admit') }}" method="POST"
                 onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">

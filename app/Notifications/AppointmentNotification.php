@@ -27,7 +27,9 @@ class AppointmentNotification extends Notification
     public function __construct(Appointment $appointment, $level)
     {
         //There are 3 Approval levels level one is the supervisor level 2 head of department level 3 security
-        $this->action_url = url('/appointments/approve', ['ref' => sha1($appointment->id), 'level' => sha1($level)]);
+        $tag = "693fbc24-23ad-40a2-8fc3-9f1f05e4dc32";
+        $ref = sha1($appointment->id) . $tag . sha1($level);
+        $this->action_url = route('admin.appointments.approve_action_url', $ref);
         $purpose = config('appointment.purpose')[$appointment->purpose];
 
         switch ($level) {

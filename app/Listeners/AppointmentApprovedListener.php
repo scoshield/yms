@@ -22,11 +22,13 @@ class AppointmentApprovedListener
         $appointment = $event->appointment;
 
         if ($appointment->status == 'hod_approved') {
+
             $users = User::where('yard_id', $appointment->yard_id)->whereHas('roles', function ($query) {
                 $query->whereHas('permissions', function ($_query) {
                     $_query->where('title', 'grant_security_approval');
                 });
-            })->get(); // user must belong to same yard as appointment
+            })->get(); # user must belong to same yard as appointment
+
             Notification::send($users, new AppointmentNotification($appointment, 2));
         }
     }

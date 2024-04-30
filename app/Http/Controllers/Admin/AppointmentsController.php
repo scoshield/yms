@@ -221,7 +221,7 @@ class AppointmentsController extends Controller
 
     public function approve(Request $request)
     {
-        if (!$request->user()->can('grant_hod_approval')) {
+        if (!$request->user()->can('grant_hod_approval') || !$request->user()->can('grant_security_approval')) {
             abort(403);
         }
 
@@ -231,6 +231,35 @@ class AppointmentsController extends Controller
         $appointment->update([$request->approval_type . '_approved_by' => Auth::id()]);
         event(new AppointmentApproved($appointment));
         return back();
+    }
+
+    public function approveAtLevel(Request $request)
+    {
+        if (!$request->user()->can('grant_hod_approval') || !$request->user()->can('grant_security_approval')) {
+            abort(403);
+        }
+        
+        //$ref = sha1($appointment->id) . $tag . sha1($level);
+        $tag = "693fbc24-23ad-40a2-8fc3-9f1f05e4dc32";
+        $ref = explode($tag, $request->ref);
+
+        $id = $ref[0];
+        $level = $ref[1];
+
+        $appointment_row = DB::select('select id from appointments where sha1(id) = ?', [$id]);
+        $appointment_id = $appointment_row[0]->id;
+        $appointment = Appointment::find($appointment_id);
+
+        $approval_type = 'hod';
+        if ($level == sha1(2)) {
+            $approval_type = 'security';
+        }
+
+        $appointment->update(['status' => $approval_type . '_approved']);
+        $appointment->update([$approval_type . '_approved_at' => date('Y-m-d H:i:s')]);
+        $appointment->update([$approval_type . '_approved_by' => Auth::id()]);
+        event(new AppointmentApproved($appointment));
+        return redirect()->route('admin.appointments.index');
     }
 
     private function generatePass($appointment)
@@ -307,24 +336,5 @@ class AppointmentsController extends Controller
         Appointment::whereIn('id', request('ids'))->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
-    }
-
-    public function approveAtLevel(Request $request)
-    {
-        $ref = $request->ref;
-        $level = $request->level;
-
-        $appointment = DB::select('select * from appointments where sha1(id) = ?', [$ref]);
-
-        switch ($level) {
-            case sha1(1): // level 1 
-                break;
-            case sha1(2): //  level 2
-                break;
-            case sha1(3): //  level 1 
-                break;
-        }
-
-        dd($appointment);
     }
 }

@@ -15,7 +15,7 @@
         </div>
 
         <div class="card-body">
-            
+
             <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Appointment">
                 <thead>
                     <tr>

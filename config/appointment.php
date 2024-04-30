@@ -10,7 +10,7 @@ return [
         'finished_loading' => 'Finished Loading',
         'finished_offloading' => 'Finished Offloading',
         'finished' => 'Finished',
-        'addmitted' => 'Addmitted',
+        'admitted' => 'Admitted',
     ],
     'purpose' => [
         'loading' => 'Loading',

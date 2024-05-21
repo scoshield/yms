@@ -16,6 +16,8 @@ return [
     ],
 
     'loading_bay_status' => [
+        'waiting' => 'Waiting',
+        
         'started_loading' => 'Started',
         'started_offloading' => 'Started',
         'started_offloading_and_loading' => 'Started',

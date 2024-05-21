@@ -46,22 +46,23 @@ class LoadingBayController extends Controller
             });
 
             $table->editColumn('type', function ($row) {
-                return $row->type ? ucwords($row->type) : "";
+                //return $row->type ? ucwords($row->type) : "";
+                return $row->type ? config('appointment.purpose')[$row->type] : "";
             });
 
             $table->editColumn('status', function ($row) {
-                return $row->status ? ucwords(str_replace('_',' ', $row->status)) : "";
-                //return $row->status ? config('appointment.status')[$row->status] : "";
+                //return $row->status ? ucwords(str_replace('_',' ', $row->status)) : "";
+                return $row->status ? config('appointment.loading_bay_status')[$row->status] : "";
             });
 
             $table->editColumn('appointment', function ($row) {
-                return $row->appointment ? $row->appointment->driver_name.' ('.$row->appointment->truck_details.')' : "";
+                return $row->appointment ? $row->appointment->driver_name . ' (' . $row->appointment->truck_details . ')' : "";
             });
-            
+
             $table->editColumn('duration', function ($row) {
                 $duration = "";
 
-                if($row->started_at && $row->finished_at){
+                if ($row->started_at && $row->finished_at) {
                     $datetime1 = new \DateTime($row->started_at);
                     $datetime2 = new \DateTime($row->finished_at);
                     $interval = $datetime1->diff($datetime2);
@@ -69,7 +70,7 @@ class LoadingBayController extends Controller
                     $dys = substr("0{$interval->format('%d')}", -2);
                     $hrs = substr("0{$interval->format('%h')}", -2);
                     $mns = substr("0{$interval->format('%i')}", -2);
-                    return $dys.":".$hrs.":".$mns;
+                    return $dys . ":" . $hrs . ":" . $mns;
                 }
 
                 return $duration;
@@ -134,18 +135,19 @@ class LoadingBayController extends Controller
         return response(null, Response::HTTP_NO_CONTENT);
     }
 
-    public function start(Request $request){
+    public function start(Request $request)
+    {
         abort_if(Gate::denies('loadingbay_start'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        
+
         DB::transaction(function () use ($request) {
             $loadingBay = LoadingBay::find($request->id);
             $loadingBay->update([
                 'started_at' => date('Y-m-d H:i:s'),
-                'status' => 'started_'. $loadingBay->type
+                'status' => 'started_' . $loadingBay->type
             ]);
 
             $appointment = $loadingBay->appointment;
-            $appointment->update(['status' => 'started_'. $loadingBay->type]);
+            $appointment->update(['status' => 'started_' . $loadingBay->type]);
         });
 
         return redirect()->route('admin.loadingbay.index');
@@ -154,7 +156,7 @@ class LoadingBayController extends Controller
     public function finish(Request $request)
     {
         abort_if(Gate::denies('loadingbay_finish'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-    
+
         DB::transaction(function () use ($request) {
             $loadingBay = LoadingBay::find($request->id);
             $loadingBay->update([

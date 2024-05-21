@@ -12,6 +12,18 @@ return [
         'finished_offloading_and_loading' => 'Finished',
         'finished' => 'Finished',
         'admitted' => 'Admitted',
+        'finished_cross_stuff' => 'Finished Cross Docking',
+    ],
+
+    'loading_bay_status' => [
+        'started_loading' => 'Started',
+        'started_offloading' => 'Started',
+        'started_offloading_and_loading' => 'Started',
+        'started_cross_stuff' => 'Started',
+
+        'finished_loading' => 'Finished',
+        'finished_offloading' => 'Finished',
+        'finished_offloading_and_loading' => 'Finished',
         'finished_cross_stuff' => 'Finished',
     ],
 
@@ -34,19 +46,19 @@ return [
         'break_bulk_cargo_out' => 'Break Bulk Cargo Out'
     ],
 
-    'security_checklist'=>[
-        'RCN', 
-        'DN', 
-        'GRN', 
-        'GDN', 
-        'SEAL NOS', 
-        'TRUCK', 
-        'TRAILER', 
-        'DRIVER DETAILS', 
-        'FILE NO', 
-        'CONTAINER NOS', 
-        'GENSET NO', 
-        'PARCEL TRACKING NUMBER', 
+    'security_checklist' => [
+        'RCN',
+        'DN',
+        'GRN',
+        'GDN',
+        'SEAL NOS',
+        'TRUCK',
+        'TRAILER',
+        'DRIVER DETAILS',
+        'FILE NO',
+        'CONTAINER NOS',
+        'GENSET NO',
+        'PARCEL TRACKING NUMBER',
         'PO NUMBER'
     ]
 ];

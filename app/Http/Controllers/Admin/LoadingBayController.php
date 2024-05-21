@@ -50,7 +50,8 @@ class LoadingBayController extends Controller
             });
 
             $table->editColumn('status', function ($row) {
-                return $row->status ? ucwords(str_replace('_',' ', $row->status)) : "";
+                // return $row->status ? ucwords(str_replace('_',' ', $row->status)) : "";
+                return $row->status ? config('appointment.status')[$row->status] : "";
             });
 
             $table->editColumn('appointment', function ($row) {

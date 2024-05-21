@@ -23,6 +23,7 @@
                         <th>{{ trans('cruds.appointment.fields.id') }}</th>
                         <th>{{ trans('cruds.appointment.fields.hauler') }}</th>
                         <th>{{ trans('cruds.appointment.fields.purpose') }} </th>
+                        <th>{{ trans('cruds.appointment.fields.type') }} </th>
                         <th>{{ trans('cruds.appointment.fields.date') }}</th>
                         {{-- <th>{{ trans('cruds.appointment.fields.start_time') }}</th>
                         <th>{{ trans('cruds.appointment.fields.finish_time') }}</th> --}}
@@ -104,6 +105,10 @@
                     {
                         data: 'purpose',
                         name: 'purpose'
+                    },
+                    {
+                        data: 'type',
+                        name: 'type'
                     },
                     {
                         data: 'appointment_date',

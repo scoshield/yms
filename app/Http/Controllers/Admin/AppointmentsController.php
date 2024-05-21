@@ -85,6 +85,10 @@ class AppointmentsController extends Controller
                 return $row->purpose ? config('appointment.purpose')[$row->purpose] : "";
             });
 
+            $table->editColumn('type', function ($row) {
+                return $row->type ? config('appointment.type')[$row->type] : "";
+            });
+
             $table->editColumn('comments', function ($row) {
                 return $row->comments ? $row->comments : "";
             });
@@ -238,7 +242,7 @@ class AppointmentsController extends Controller
         if (!$request->user()->can('grant_hod_approval') || !$request->user()->can('grant_security_approval')) {
             abort(403);
         }
-        
+
         //$ref = sha1($appointment->id) . $tag . sha1($level);
         $tag = "693fbc24-23ad-40a2-8fc3-9f1f05e4dc32";
         $ref = explode($tag, $request->ref);

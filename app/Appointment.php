@@ -49,6 +49,13 @@ class Appointment extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
+    public function codeRef()
+    {
+        $dt = date('Ymd,Hi', strtotime($this->created_at));
+        $stamp = $dt . ',00' . $this->id;
+        return $stamp;
+    }
+
     public function services()
     {
         return $this->belongsToMany(Service::class);

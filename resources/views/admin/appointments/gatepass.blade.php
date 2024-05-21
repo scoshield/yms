@@ -6,11 +6,13 @@
 </head>
 
 <body>
-    <div style="text-align:right;">
-        {{ $gatePass->ref }}
-    </div>
+    {{-- 
+        <div style="text-align:right;">
+            {{ $gatePass->ref }}
+        </div> 
+    --}}
 
-    <div style="border-top:1px solid #000;">
+    <div style="-border-top:1px solid #000;">
         <table style="line-height: 1.5;">
             <tr>
                 <td>
@@ -31,7 +33,7 @@
 
     <table style="line-height: 1.5;">
         <tr>
-            <td><b>Time</b> {{ $appointment->appointment_date }}</td>
+            <td><b>Time:</b> {{ $appointment->appointment_date }}</td>
 
             <td style="text-align:right;"><b>Yard:</b>{{ $appointment->yard->name }}</td>
         </tr>
@@ -42,7 +44,6 @@
                 {{ @config('appointment.purpose')[$appointment->purpose] }}
                 {{ $appointment->type == ' ' ? ', ' . config('appointment.type')[$appointment->type] : ' ' }}
             </td>
-
         </tr>
         <tr>
             <td><b>Driver Contact:</b> {{ $appointment->contact_details }}</td>
@@ -108,12 +109,26 @@
     </table>
 
     <br />
-    <p>
-        &nbsp;&nbsp;&nbsp;<br />
-        Issued By: {{ Auth::user()->name }} _____________________<br />
-        Received By: ________________________<br />
-        {{-- BIC: 23141434<br /> --}}
-    </p>
+
+    <table>
+        <tr>
+            <td>
+                <p>
+                    <br /><br />
+                    Issued By: {{ Auth::user()->name }} _____________________<br />
+                    Received By: ________________________<br />
+                    {{-- BIC: 23141434<br /> --}}
+                </p>
+            </td>
+
+            {{-- <td style="text-align:right;">
+                <p style="margin-right:0">
+                    <img src="data:image/svg;base64,  {{ $qrCode }}" width="70"
+                        style="margin-top:10px; float: right;">
+                </p>
+            </td> --}}
+        </tr>
+    </table>
 
 </body>
 

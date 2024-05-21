@@ -3,27 +3,27 @@
 namespace App\Http\Controllers\Admin;
 
 
-use App\Events\AppointmentApproved;
 use Gate;
+use App\Service;
+use App\Yard;
+use App\GatePass;
 use App\Client;
 use App\Hauler;
 use App\Employee;
+use App\LoadingBay;
+use App\InventoryItem;
 use App\Appointment;
+use App\Events\AppointmentApproved;
 use App\Http\Controllers\Controller;
 use App\Events\AppointmentCreatedEvent;
 use App\Http\Requests\MassDestroyAppointmentRequest;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
-use App\InventoryItem;
-use App\LoadingBay;
-use App\Service;
-use App\Yard;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\GatePass;
 use Illuminate\Support\Str;
 use Elibyy\TCPDF\Facades\TCPDF;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -298,11 +298,29 @@ class AppointmentsController extends Controller
         // 'strip' => 'Stip',
         // 'cross_stuff' => 'Cross Stuff',
 
-        $fileName = $appointment->truck_details . ' ' . $appointment->created_at;
+        // set style for barcode
+        $style = array(
+            // 'border' => 2,
+            'vpadding' => 'auto',
+            'hpadding' => 'auto',
+            'fgcolor' => array(0, 0, 0),
+            'bgcolor' => false, //array(255,255,255)
+            'module_width' => 1, // width of a single module in points
+            'module_height' => 1 // height of a single module in points
+        );
+
+        $fileName = $appointment->truck_details . ' ' . $appointment->created_at . '.pdf';
 
         $qrCode = base64_encode(QrCode::format('svg')->size(256)->generate($gatePass->ref));
 
-        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new TCPDF(
+            PDF_PAGE_ORIENTATION,
+            PDF_UNIT,
+            PDF_PAGE_FORMAT,
+            true,
+            'UTF-8',
+            false
+        );
 
         //$logo_path = public_path('/images/AGL_LOGO.jfif');
         $pdf::SetCreator('YardMS');
@@ -327,6 +345,9 @@ class AppointmentsController extends Controller
         $html = view()->make('admin.appointments.gatepass', $data)->render();
 
         $pdf::writeHTML($html, true, false, true, false, '');
+
+        $pdf::write2DBarcode($appointment->codeRef(), 'PDF417', 155, 100, 0, 30, $style, 'N');
+        //$pdf::Text(80, 85, $appointment->codeRef());
 
         $pdf::Output($fileName, 'I');
 

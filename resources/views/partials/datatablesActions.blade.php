@@ -62,7 +62,13 @@
 
 @if (isset($printPassAppointmentGate))
     @can($printPassAppointmentGate)
-        @if ($row->status == 'finished_loading')
+        @if (in_array($row->status, [
+                'finished_loading',
+                'finished_offloading',
+                'finished_offloading_and_loading',
+                'finished_cross_stuff',
+                'security_approved',
+            ]))
             <form action="{{ route('admin.' . $crudRoutePart . '.printpass') }}" method="POST"
                 style="display: inline-block;">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">

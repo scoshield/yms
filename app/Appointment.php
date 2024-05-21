@@ -23,29 +23,11 @@ class Appointment extends Model
     protected $casts = [
         'appointment_date' => 'date:d/m/y  H:i A',
         'created_at' => 'date:d/m/y  H:i A',
+        'security_approved_at' => 'date:d/m/y  H:i A',
+        'hod_approved_at' => 'date:d/m/y  H:i A',
     ];
 
-    protected $fillable = [
-        // 'start_time',
-        // 'finish_time',
-        'appointment_date',
-        'yard_id',
-        'purpose',
-        'type',
-        'hauler_id',
-        'creator_id',
-        'truck_details',
-        'driver_name',
-        'contact_details',
-        'file_number',
-        'container_number',
-        'inventory_item_id',
-        'status',
-        'comments',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-    ];
+    protected $guarded = [];
 
     public function yard()
     {
@@ -80,5 +62,15 @@ class Appointment extends Model
     public function gate_pass()
     {
         return $this->hasOne(GatePass::class, 'appointment_id');
+    }
+
+    public function hod_approver()
+    {
+        return $this->belongsTo(User::class, 'hod_approved_by');
+    }
+
+    public function security_approver()
+    {
+        return $this->belongsTo(User::class, 'security_approved_by');
     }
 }

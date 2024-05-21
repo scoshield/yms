@@ -31,6 +31,7 @@ class Appointment extends Model
         'appointment_date',
         'yard_id',
         'purpose',
+        'type',
         'hauler_id',
         'creator_id',
         'truck_details',
@@ -71,11 +72,13 @@ class Appointment extends Model
         return $this->belongsToMany(Service::class);
     }
 
-    public function loading_bay_session(){
+    public function loading_bay_session()
+    {
         return $this->hasOne(LoadingBay::class, 'appointment_id');
     }
 
-    public function gate_pass(){
+    public function gate_pass()
+    {
         return $this->hasOne(GatePass::class, 'appointment_id');
     }
 }

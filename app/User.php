@@ -69,4 +69,5 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Yard::class, 'yard_id');
     }
+
 }

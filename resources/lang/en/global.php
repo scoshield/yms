@@ -14,6 +14,8 @@ return [
     'start'                                => 'Start',
     'finish'                               => 'Finish',
     'checkout'                             => 'Checkout',
+    'hod_approve'                          => 'Approve as H.O.D',
+    'security_approve'                     => 'Approve as Security',
 
     'downloadFile'                         => 'Download file',
     'edit'                                 => 'Edit',

@@ -45,7 +45,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('clients', 'ClientsController');
 
     // Appointments
+    ///appointments/approve/632667547e7cd3e0466547863e1207a8c0c0c549/da4b9237bacccdf19c0760cab7aec4a8359010b0
     Route::post('appointments/admit', 'AppointmentsController@admit')->name('appointments.admit');
+    Route::post('appointments/approve', 'AppointmentsController@approve')->name('appointments.approve');
+    Route::get('appointments/{ref}/approve', 'AppointmentsController@approveAtLevel')->name('appointments.approve_action_url');
+
     Route::post('appointments/printpass', 'AppointmentsController@printpass')->name('appointments.printpass');
     Route::delete('appointments/destroy', 'AppointmentsController@massDestroy')->name('appointments.massDestroy');
     Route::resource('appointments', 'AppointmentsController');

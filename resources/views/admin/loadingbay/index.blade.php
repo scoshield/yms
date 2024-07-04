@@ -20,7 +20,7 @@
                     <tr>
                         <th width="10"> </th>
                         <th>{{ trans('cruds.loadingbay.fields.id') }} </th>
-                        <th>{{ trans('cruds.loadingbay.fields.type') }} </th>
+                        <th> Purpose </th>
                         <th>{{ trans('cruds.loadingbay.fields.appointment') }}</th>
                         <th>{{ trans('cruds.loadingbay.fields.status') }}</th>
                         <th>{{ trans('cruds.loadingbay.fields.created_at') }}</th>

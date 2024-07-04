@@ -2,25 +2,28 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Appointment;
+
+use Gate;
+use App\Service;
+use App\Yard;
+use App\GatePass;
 use App\Client;
-use App\Employee;
 use App\Hauler;
+use App\Employee;
+use App\LoadingBay;
+use App\InventoryItem;
+use App\Appointment;
+use App\Events\AppointmentApproved;
 use App\Http\Controllers\Controller;
+use App\Events\AppointmentCreatedEvent;
 use App\Http\Requests\MassDestroyAppointmentRequest;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
-use App\InventoryItem;
-use App\LoadingBay;
-use App\Service;
-use App\Yard;
-use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\GatePass;
 use Illuminate\Support\Str;
 use Elibyy\TCPDF\Facades\TCPDF;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -29,6 +32,8 @@ class AppointmentsController extends Controller
 {
     public function index(Request $request)
     {
+        //dd($request->user()->can('grant_hod_approval'));
+        //dd(Auth::user());
         if ($request->ajax()) {
             $query = Appointment::with(['hauler', 'creator', 'yard', 'gate_pass'])
                 ->select(sprintf('%s.*', (new Appointment)->table));
@@ -42,6 +47,8 @@ class AppointmentsController extends Controller
                 $editGate      = 'appointment_edit';
                 $deleteGate    = 'appointment_delete';
                 $admitAppointmentGate = 'appointment_admit';
+                $hodAppointmentGate = 'grant_hod_approval';
+                $securityAppointmentGate = 'grant_security_approval';
                 $printPassAppointmentGate = 'appointment_printpass';
                 $crudRoutePart = 'appointments';
 
@@ -49,6 +56,8 @@ class AppointmentsController extends Controller
                     'viewGate',
                     'editGate',
                     'deleteGate',
+                    'hodAppointmentGate',
+                    'securityAppointmentGate',
                     'admitAppointmentGate',
                     'printPassAppointmentGate',
                     'crudRoutePart',
@@ -73,11 +82,19 @@ class AppointmentsController extends Controller
             });
 
             $table->editColumn('purpose', function ($row) {
-                return $row->purpose ? $row->purpose : "";
+                return $row->purpose ? config('appointment.purpose')[$row->purpose] : "";
+            });
+
+            $table->editColumn('type', function ($row) {
+                return $row->type ? config('appointment.type')[$row->type] : "";
             });
 
             $table->editColumn('comments', function ($row) {
                 return $row->comments ? $row->comments : "";
+            });
+
+            $table->editColumn('status', function ($row) {
+                return $row->status ? config('appointment.status')[$row->status] : "";
             });
 
             // $table->editColumn('services', function ($row) {
@@ -133,6 +150,9 @@ class AppointmentsController extends Controller
             $inventory_item->update();
             return redirect()->route('admin.inventory_items.index');
         }
+        // $supervisors = User::whereHas()
+        //notify users
+        event(new AppointmentCreatedEvent($appointment));
 
         return redirect()->route('admin.appointments.index');
     }
@@ -203,6 +223,49 @@ class AppointmentsController extends Controller
         return back();
     }
 
+    public function approve(Request $request)
+    {
+        if (!$request->user()->can('grant_hod_approval') || !$request->user()->can('grant_security_approval')) {
+            abort(403);
+        }
+
+        $appointment = Appointment::find($request->id);
+        $appointment->update(['status' => $request->approval_type . '_approved']);
+        $appointment->update([$request->approval_type . '_approved_at' => date('Y-m-d H:i:s')]);
+        $appointment->update([$request->approval_type . '_approved_by' => Auth::id()]);
+        event(new AppointmentApproved($appointment));
+        return back();
+    }
+
+    public function approveAtLevel(Request $request)
+    {
+        if (!$request->user()->can('grant_hod_approval') || !$request->user()->can('grant_security_approval')) {
+            abort(403);
+        }
+
+        //$ref = sha1($appointment->id) . $tag . sha1($level);
+        $tag = "693fbc24-23ad-40a2-8fc3-9f1f05e4dc32";
+        $ref = explode($tag, $request->ref);
+
+        $id = $ref[0];
+        $level = $ref[1];
+
+        $appointment_row = DB::select('select id from appointments where sha1(id) = ?', [$id]);
+        $appointment_id = $appointment_row[0]->id;
+        $appointment = Appointment::find($appointment_id);
+
+        $approval_type = 'hod';
+        if ($level == sha1(2)) {
+            $approval_type = 'security';
+        }
+
+        $appointment->update(['status' => $approval_type . '_approved']);
+        $appointment->update([$approval_type . '_approved_at' => date('Y-m-d H:i:s')]);
+        $appointment->update([$approval_type . '_approved_by' => Auth::id()]);
+        event(new AppointmentApproved($appointment));
+        return redirect()->route('admin.appointments.index');
+    }
+
     private function generatePass($appointment)
     {
         return GatePass::updateOrCreate(['appointment_id' => $appointment->id], [
@@ -235,11 +298,29 @@ class AppointmentsController extends Controller
         // 'strip' => 'Stip',
         // 'cross_stuff' => 'Cross Stuff',
 
-        $fileName = $appointment->truck_details . ' ' . $appointment->created_at;
+        // set style for barcode
+        $style = array(
+            // 'border' => 2,
+            'vpadding' => 'auto',
+            'hpadding' => 'auto',
+            'fgcolor' => array(0, 0, 0),
+            'bgcolor' => false, //array(255,255,255)
+            'module_width' => 1, // width of a single module in points
+            'module_height' => 1 // height of a single module in points
+        );
+
+        $fileName = $appointment->truck_details . ' ' . $appointment->created_at . '.pdf';
 
         $qrCode = base64_encode(QrCode::format('svg')->size(256)->generate($gatePass->ref));
 
-        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new TCPDF(
+            PDF_PAGE_ORIENTATION,
+            PDF_UNIT,
+            PDF_PAGE_FORMAT,
+            true,
+            'UTF-8',
+            false
+        );
 
         //$logo_path = public_path('/images/AGL_LOGO.jfif');
         $pdf::SetCreator('YardMS');
@@ -264,6 +345,9 @@ class AppointmentsController extends Controller
         $html = view()->make('admin.appointments.gatepass', $data)->render();
 
         $pdf::writeHTML($html, true, false, true, false, '');
+
+        $pdf::write2DBarcode($appointment->codeRef(), 'PDF417', 155, 100, 0, 30, $style, 'N');
+        //$pdf::Text(80, 85, $appointment->codeRef());
 
         $pdf::Output($fileName, 'I');
 

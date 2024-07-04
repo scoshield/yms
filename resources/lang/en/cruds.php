@@ -265,6 +265,7 @@ return [
             'inventory_item_id'           => 'Inventory Item.',
             'inventory_item_id_helper'           => '',
             'status'           => 'Status',
+            'type'           => 'Type',
             'status_helper'    => '',
 
             'created_at'         => 'Created at',

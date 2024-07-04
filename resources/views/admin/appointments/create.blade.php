@@ -46,20 +46,41 @@
                     </div>
                 </div>
 
-                <div class="form-group {{ $errors->has('yard_id') ? 'has-error' : '' }}">
-                    <label for="yard">{{ trans('cruds.appointment.fields.yard') }} *</label>
-                    <select name="yard_id" id="yard" class="form-control select2">
-                        @foreach ($yards as $id => $yard)
-                            <option value="{{ $id }}"
-                                {{ (isset($appointment) && $appointment->yard ? $appointment->yard->id : old('employee_id')) == $id ? 'selected' : '' }}>
-                                {{ $yard }}</option>
-                        @endforeach
-                    </select>
-                    @if ($errors->has('yard_id'))
-                        <em class="invalid-feedback">
-                            {{ $errors->first('yard_id') }}
-                        </em>
-                    @endif
+                <div class="row">
+                    <div class="form-group col-md-6 {{ $errors->has('yard_id') ? 'has-error' : '' }}">
+                        <label for="yard">{{ trans('cruds.appointment.fields.yard') }} *</label>
+                        <select name="yard_id" id="yard" class="form-control select2">
+                            @foreach ($yards as $id => $yard)
+                                <option value="{{ $id }}"
+                                    {{ (isset($appointment) && $appointment->yard ? $appointment->yard->id : old('employee_id')) == $id ? 'selected' : '' }}>
+                                    {{ $yard }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        @if ($errors->has('yard_id'))
+                            <em class="invalid-feedback">
+                                {{ $errors->first('yard_id') }}
+                            </em>
+                        @endif
+                    </div>
+
+                    <div class="form-group col-md-6 {{ $errors->has('type') ? 'has-error' : '' }}">
+                        <label for="type">{{ trans('cruds.appointment.fields.type') }} *</label>
+                        <select name="type" id="type" class="form-control select2" required>
+                            @foreach (config('appointment.type') as $key => $type)
+                                <option value="{{ $key }}"
+                                    {{ (isset($appointment) && $appointment->type ? $appointment->type : old('type')) == $key ? 'selected' : '' }}>
+                                    {{ $type }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @if ($errors->has('type'))
+                            <em class="invalid-feedback">
+                                {{ $errors->first('type') }}
+                            </em>
+                        @endif
+                    </div>
                 </div>
 
                 <div class="row">

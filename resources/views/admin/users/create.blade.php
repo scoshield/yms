@@ -50,6 +50,28 @@
                     </p>
                 </div>
 
+                <div class="form-group {{ $errors->has('department_id') ? 'has-error' : '' }}">
+                    <label for="department_id">
+                        Department *
+                    </label>
+
+                    <select name="department_id" id="department_id" class="form-control select2" multiple="multiple" required>
+                        @foreach ($departments as $id => $department)
+                            <option value="{{ $id }}" {{ in_array($id, old('department_id', [])) || (isset($user) && $user->department_id) ? 'selected' : '' }}>
+                                {{$department}}
+                            </option>
+                        @endforeach
+                    </select>
+                    @if ($errors->has('department_id'))
+                        <em class="invalid-feedback">
+                            {{ $errors->first('department_id') }}
+                        </em>
+                    @endif
+                    <p class="helper-block">
+                        {{ trans('cruds.user.fields.department_id_helper') }}
+                    </p>
+                </div>
+
                 <div class="form-group {{ $errors->has('roles') ? 'has-error' : '' }}">
                     <label for="roles">{{ trans('cruds.user.fields.roles') }}*
                         <span class="btn btn-info btn-xs select-all">{{ trans('global.select_all') }}</span>
@@ -87,7 +109,6 @@
                         </em>
                     @endif
                 </div>
-
 
                 <div>
                     <input class="btn btn-danger" type="submit" value="{{ trans('global.save') }}">

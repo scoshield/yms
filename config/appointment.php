@@ -3,8 +3,8 @@
 return [
     'status' => [
         'pending' => 'Pending',
-        'hod_approved' => 'Approved by H.O.D',
-        'security_approved' => 'Approved by Security',
+        'hod_approved' => 'H.O.D Approved',
+        'security_approved' => 'Security Approved',
         'waiting' => 'Waiting',
         'loading' => 'Loading',
         'finished_loading' => 'Finished',
@@ -12,12 +12,18 @@ return [
         'finished_offloading_and_loading' => 'Finished',
         'finished' => 'Finished',
         'admitted' => 'Admitted',
-        'finished_cross_stuff' => 'Finished Cross Docking',
+
+        'started_loading' => 'Started',
+        'started_offloading' => 'Started',
+        'started_offloading_and_loading' => 'Started',
+        'started_cross_stuff' => 'Started',
+
+        'finished_cross_stuff' => 'Finished',
     ],
 
     'loading_bay_status' => [
         'waiting' => 'Waiting',
-        
+
         'started_loading' => 'Started',
         'started_offloading' => 'Started',
         'started_offloading_and_loading' => 'Started',

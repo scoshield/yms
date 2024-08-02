@@ -57,6 +57,8 @@ return [
             'roles_helper'             => '',
             'yard'                     => 'Assigned Yard',
             'yard_helper'              => '',
+            'department_id'               => 'Department',
+            'department_id_helper'        => '',
             'remember_token'           => 'Remember Token',
             'remember_token_helper'    => '',
             'created_at'               => 'Created at',

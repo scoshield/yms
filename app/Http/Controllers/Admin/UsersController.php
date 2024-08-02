@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Department;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyUserRequest;
 use App\Http\Requests\StoreUserRequest;
@@ -27,10 +28,10 @@ class UsersController extends Controller
     public function create()
     {
         abort_if(Gate::denies('user_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
         $roles = Role::all()->pluck('title', 'id');
         $yards = Yard::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-        return view('admin.users.create', compact('roles', 'yards'));
+        $departments = Department::all()->pluck('name', 'id');
+        return view('admin.users.create', compact('roles', 'yards','departments'));
     }
 
     public function store(StoreUserRequest $request)

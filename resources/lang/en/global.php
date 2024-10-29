@@ -10,6 +10,7 @@ return [
     'dashboard'                            => 'Dashboard',
     'delete'                               => 'Delete',
     'admit'                                => 'Admit',
+    'gateout'                                => 'Gate Out',
     'gate_pass'                           => 'Gate Pass',
     'start'                                => 'Start',
     'finish'                               => 'Finish',

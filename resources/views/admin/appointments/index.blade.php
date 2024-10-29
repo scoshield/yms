@@ -16,12 +16,13 @@
 
         <div class="card-body">
 
-            <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Appointment">
+            <table class="table table-sm table-bordered table-striped table-hover ajaxTable datatable datatable-Appointment">
                 <thead>
                     <tr>
                         <th width="10"></th>
                         <th>{{ trans('cruds.appointment.fields.id') }}</th>
                         <th>{{ trans('cruds.appointment.fields.hauler') }}</th>
+                        <th>{{ trans('cruds.loadingbay.fields.appointment') }}</th>
                         <th>{{ trans('cruds.appointment.fields.purpose') }} </th>
                         <th>{{ trans('cruds.appointment.fields.type') }} </th>
                         <th>{{ trans('cruds.appointment.fields.date') }}</th>
@@ -101,6 +102,10 @@
                     {
                         data: 'hauler_name',
                         name: 'hauler.name'
+                    },
+                    {
+                        data: 'appointment',
+                        name: 'appointment'
                     },
                     {
                         data: 'purpose',

@@ -50,11 +50,25 @@
 @if (isset($admitAppointmentGate))
     @can($admitAppointmentGate)
         @if ($row->status == 'security_approved')
-            <form action="{{ route('admin.' . $crudRoutePart . '.admit') }}" method="POST"
+            {{-- <form action="{{ route('admin.' . $crudRoutePart . '.admit') }}" method="POST"
                 onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="id" value="{{ $row->id }}">
                 <input type="submit" class="btn btn-xs btn-dark" value="{{ trans('global.admit') }}">
+            </form> --}}
+            <a href="{{ route('admin.appointment.gatein', $row->id)}}" class="btn btn-xs btn-dark">Admit</a>
+        @endif
+    @endcan
+@endif
+
+@if (isset($appointmentGateout))
+    @can($appointmentGateout)
+        @if ($row->process_done == 1 && !$row->gateout)
+            <form action="{{ route('admin.' . $crudRoutePart . '.gateout') }}" method="POST"
+                onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="id" value="{{ $row->id }}">
+                <input type="submit" class="btn btn-xs btn-dark" value="{{ trans('global.gateout') }}">
             </form>
         @endif
     @endcan
@@ -68,6 +82,8 @@
                 'finished_offloading_and_loading',
                 'finished_cross_stuff',
                 'security_approved',
+                'gateout',
+                'admitted'
             ]))
             <form action="{{ route('admin.' . $crudRoutePart . '.printpass') }}" method="POST"
                 style="display: inline-block;">
@@ -86,13 +102,14 @@
 @if (isset($loadingbayStartGate))
     @can($loadingbayStartGate)
         @if ($row->status == 'waiting')
-            <form action="{{ route('admin.' . $crudRoutePart . '.start') }}" method="POST"
+            {{-- <form action="{{ route('admin.' . $crudRoutePart . '.start') }}" method="POST"
                 onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="id" value="{{ $row->id }}">
                 <input type="submit" class="btn btn-xs btn-success"
                     value="{{ trans('global.start') }} {{ ucwords($row->type) }}">
-            </form>
+            </form> --}}
+            <a href="{{ route('admin.loading.start', $row->id)}}" class="btn btn-xs btn-dark">{{ trans('global.start') }} {{ ucwords($row->type) }}</a>
         @endif
     @endcan
 @endif
@@ -100,16 +117,32 @@
 @if (isset($loadingbayFinishGate))
     @can($loadingbayFinishGate)
         @if ($row->status == 'started_' . $row->type)
-            <form action="{{ route('admin.' . $crudRoutePart . '.finish') }}" method="POST"
+            {{-- <form action="{{ route('admin.' . $crudRoutePart . '.finish') }}" method="POST"
                 onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="id" value="{{ $row->id }}">
                 <input type="submit" class="btn btn-xs btn-dark"
                     value="{{ trans('global.finish') }} {{ ucwords($row->type) }}">
-            </form>
+            </form> --}}
+            <a href="{{ route('admin.loading.end', $row->id)}}" class="btn btn-xs btn-dark">{{ trans('global.finish') }} {{ ucwords($row->type) }}</a>
         @endif
     @endcan
 @endif
+
+{{-- @if (isset($loadingbayFinishGate))
+    @can($loadingbayFinishGate)
+        @if ($row->status == 'started_' . $row->type) --}}
+            {{-- <form action="{{ route('admin.' . $crudRoutePart . '.finish') }}" method="POST"
+                onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="id" value="{{ $row->id }}">
+                <input type="submit" class="btn btn-xs btn-dark"
+                    value="{{ trans('global.finish') }} {{ ucwords($row->type) }}">
+            </form> --}}
+            {{-- <a href="{{ route('admin.loading.end', $row->id)}}" class="btn btn-xs btn-dark">{{ trans('global.finish') }} {{ ucwords($row->type) }}</a>
+        @endif
+    @endcan
+@endif --}}
 
 @if (isset($checkoutInventoryItemGate))
     @if ($row->status !== 'checked_out')
@@ -120,6 +153,7 @@
                 <input type="hidden" name="id" value="{{ $row->id }}">
                 <input type="submit" class="btn btn-xs btn-dark" value="{{ trans('global.checkout') }}">
             </form>
+            
         @endcan
     @endif
 @endif

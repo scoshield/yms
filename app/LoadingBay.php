@@ -34,10 +34,24 @@ class LoadingBay extends Model
         'deleted_at',
         'started_at',
         'finished_at',
-        'status'
+        'status',
+        'started_by',
+        'finished_by',
+        'start_image_url',
+        'finish_image_url'
     ];
 
     public function appointment(){
         return $this->belongsTo(Appointment::class);
+    }
+
+    public function starter()
+    {
+        return $this->belongsTo(User::class, 'started_by');
+    }
+
+    public function finisher()
+    {
+        return $this->belongsTo(User::class, 'finished_by');
     }
 }

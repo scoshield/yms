@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\LoadingBay;
 use App\Http\Controllers\Controller;
+use Exception;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class LoadingBayController extends Controller
 {
@@ -16,7 +18,7 @@ class LoadingBayController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = LoadingBay::query()->select(sprintf('%s.*', (new LoadingBay)->table));
+            $query = LoadingBay::query()->select(sprintf('%s.*', (new LoadingBay)->table))->whereNull('finished_at');
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -119,6 +121,24 @@ class LoadingBayController extends Controller
         return view('admin.loadingbay.show', compact('loadingbay'));
     }
 
+
+    public function startLoading($id)
+    {
+        abort_if(Gate::denies('loadingbay_start'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // dd($loadingbay);
+        $loadingbay = LoadingBay::findOrFail($id);
+        return view('admin.loadingbay.start', compact('loadingbay'));
+    }
+
+
+    public function endLoading($id)
+    {
+        abort_if(Gate::denies('loadingbay_finish'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // dd($loadingbay);
+        $loadingbay = LoadingBay::findOrFail($id);
+        return view('admin.loadingbay.end', compact('loadingbay'));
+    }
+
     public function destroy(LoadingBay $loadingbay)
     {
         abort_if(Gate::denies('loadingbay_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -139,35 +159,77 @@ class LoadingBayController extends Controller
     {
         abort_if(Gate::denies('loadingbay_start'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        DB::transaction(function () use ($request) {
+        $validator = Validator::make($request->all(), [
+            'startImage' => ['required', 'image']
+        ]);
+
+        if($validator->fails())
+        {
+            return back()->with(['message' => 'Truck image required.']);
+        }
+
+        $path = $request->file('startImage')->store('entries');
+        $file = basename($path);
+
+        DB::beginTransaction();
+
+        try {
             $loadingBay = LoadingBay::find($request->id);
             $loadingBay->update([
                 'started_at' => date('Y-m-d H:i:s'),
-                'status' => 'started_' . $loadingBay->type
+                'status' => 'started_' . $loadingBay->type,
+                'start_image_url' => $file
             ]);
 
             $appointment = $loadingBay->appointment;
             $appointment->update(['status' => 'started_' . $loadingBay->type]);
-        });
+        } catch (Exception $exception) {
+            DB::rollBack();
+            throw new Exception('Something went wrong. ' . $exception->getMessage());
+        }
 
-        return redirect()->route('admin.loadingbay.index');
+        DB::commit();
+
+        return back()->with(['message' => 'Truck loading details captured.']);
     }
 
     public function finish(Request $request)
     {
         abort_if(Gate::denies('loadingbay_finish'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        DB::transaction(function () use ($request) {
+        $validator = Validator::make($request->all(), [
+            'finishImage' => ['required', 'image']
+        ]);
+
+        if($validator->fails())
+        {
+            return back()->with(['message' => 'Truck image required.']);
+        }
+
+        $path = $request->file('finishImage')->store('outros');
+        $file = basename($path);
+        // dd($file);
+        // DB::transaction(function () use ($request) {
+        DB::beginTransaction();
+        try {
             $loadingBay = LoadingBay::find($request->id);
             $loadingBay->update([
                 'finished_at' => date('Y-m-d H:i:s'),
-                'status' => 'finished_' . $loadingBay->type
+                'status' => 'finished_' . $loadingBay->type,
+                'finish_image_url' => $file
             ]);
 
             $appointment = $loadingBay->appointment;
             $appointment->update(['status' => 'finished_' . $loadingBay->type]);
-        });
+            $appointment->update(['process_done' => 1]);
+        } catch (Exception $exception) {
+            DB::rollBack();
+            throw new Exception('Something went wrong. '.$exception->getMessage());            
+        }
 
-        return redirect()->route('admin.loadingbay.index');
+        DB::commit();           
+        // });
+
+        return back()->with(['message' => 'Truck timer logged.']);
     }
 }

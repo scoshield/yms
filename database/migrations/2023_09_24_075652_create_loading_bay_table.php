@@ -13,17 +13,17 @@ class CreateLoadingBayTable extends Migration
      */
     public function up()
     {
-        // Schema::create('loading_bay', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('ref')->unique();
-        //     $table->string('type');
-        //     $table->unsignedInteger('appointment_id');
-        //     $table->dateTimeTz('started_at')->nullable();
-        //     $table->dateTimeTz('finished_at')->nullable();
-        //     $table->timestamps();
-        //     $table->softDeletes();
-        //     $table->foreign('appointment_id')->references('id')->on('appointments');
-        // });
+        Schema::create('loading_bay', function (Blueprint $table) {
+            $table->id();
+            $table->string('ref')->unique();
+            $table->string('type');
+            $table->unsignedInteger('appointment_id');
+            $table->dateTimeTz('started_at')->nullable();
+            $table->dateTimeTz('finished_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+            $table->foreign('appointment_id')->references('id')->on('appointments');
+        });
     }
 
     /**

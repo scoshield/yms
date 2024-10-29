@@ -7,12 +7,12 @@ return [
         'security_approved' => 'Security Approved',
         'waiting' => 'Waiting',
         'loading' => 'Loading',
-        'finished_loading' => 'Finished',
-        'finished_offloading' => 'Finished',
-        'finished_offloading_and_loading' => 'Finished',
+        'finished_loading' => 'Finished L',
+        'finished_offloading' => 'Finished OL',
+        'finished_offloading_and_loading' => 'Finished O/L',
         'finished' => 'Finished',
         'admitted' => 'Admitted',
-
+        'gateout' => 'Gate Out',
         'started_loading' => 'Started',
         'started_offloading' => 'Started',
         'started_offloading_and_loading' => 'Started',
@@ -29,10 +29,10 @@ return [
         'started_offloading_and_loading' => 'Started',
         'started_cross_stuff' => 'Started',
 
-        'finished_loading' => 'Finished',
-        'finished_offloading' => 'Finished',
-        'finished_offloading_and_loading' => 'Finished',
-        'finished_cross_stuff' => 'Finished',
+        'finished_loading' => 'Finished L',
+        'finished_offloading' => 'Finished O',
+        'finished_offloading_and_loading' => 'Finished O/L',
+        'finished_cross_stuff' => 'Finished C',
     ],
 
     'purpose' => [ //type

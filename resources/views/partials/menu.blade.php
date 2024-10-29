@@ -150,6 +150,13 @@
                                 Haulers
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.documents.index') }}"
+                                class="nav-link {{ request()->is('admin/documents') || request()->is('admin/documents/*') ? 'active' : '' }}">
+                                <i class="fa-fw fas fa-truck nav-icon"></i>
+                                Documents
+                            </a>
+                        </li>
                     </ul>
                 </li>
             @endcan

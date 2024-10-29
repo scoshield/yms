@@ -56,6 +56,16 @@ class Appointment extends Model
         return $stamp;
     }
 
+    public function loading()
+    {
+        return $this->hasOne(LoadingBay::class, 'appointment_id');
+    }
+
+    public function offloading()
+    {
+        return $this->hasOne(LoadingBay::class, 'appointment_id')->where('type', 'offloading');
+    }
+
     public function services()
     {
         return $this->belongsToMany(Service::class);
@@ -64,6 +74,11 @@ class Appointment extends Model
     public function loading_bay_session()
     {
         return $this->hasOne(LoadingBay::class, 'appointment_id');
+    }
+
+    public function admission()
+    {
+        return $this->belongsTo(User::class, 'admitted_by');
     }
 
     public function gate_pass()

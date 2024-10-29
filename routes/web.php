@@ -1,13 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\AppointmentsController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-define('BASE_URL', env('APP_URL'));
+// define('BASE_URL', env('APP_URL'));
 
-Route::redirect('/', BASE_URL . '/login');
-Route::redirect('/home', BASE_URL . '/admin');
+Route::redirect('/', env('APP_URL') . '/login');
+Route::redirect('/home', env('APP_URL') . '/admin');
 Auth::routes(['register' => false]);
 
 // Profile Routes
@@ -47,14 +48,20 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Appointments
     ///appointments/approve/632667547e7cd3e0466547863e1207a8c0c0c549/da4b9237bacccdf19c0760cab7aec4a8359010b0
     Route::post('appointments/admit', 'AppointmentsController@admit')->name('appointments.admit');
+    Route::post('appointments/gateout', 'AppointmentsController@gateout')->name('appointments.gateout');
     Route::post('appointments/approve', 'AppointmentsController@approve')->name('appointments.approve');
     Route::get('appointments/{ref}/approve', 'AppointmentsController@approveAtLevel')->name('appointments.approve_action_url');
 
     Route::post('appointments/printpass', 'AppointmentsController@printpass')->name('appointments.printpass');
+    Route::get('appointments/gateout', [AppointmentsController::class, 'gateoutTruck'])->name('appointment.gateout');
+    Route::get('appointments/{appointment}/gatein', [AppointmentsController::class, 'gateinTruck'])->name('appointment.gatein');
+    Route::get('appointments/get/{filename}', [AppointmentsController::class, 'downloadFile'])->name('appointments.download');
     Route::delete('appointments/destroy', 'AppointmentsController@massDestroy')->name('appointments.massDestroy');
     Route::resource('appointments', 'AppointmentsController');
 
     // Loading Bay
+    Route::get('loadingbay/{id}/start', 'LoadingBayController@startLoading')->name('loading.start');
+    Route::get('loadingbay/{id}/end', 'LoadingBayController@endLoading')->name('loading.end');
     Route::post('loadingbay/start', 'LoadingBayController@start')->name('loadingbay.start');
     Route::post('loadingbay/finish', 'LoadingBayController@finish')->name('loadingbay.finish');
     Route::delete('loadingbay/destroy', 'LoadingBayController@massDestroy')->name('loadingbay.massDestroy');
@@ -77,6 +84,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('haulers/destroy', 'HaulerController@massDestroy')->name('haulers.massDestroy');
     Route::post('haulers/media', 'HaulerController@storeMedia')->name('haulers.storeMedia');
     Route::resource('haulers', 'HaulerController');
+
+    // Document
+    Route::resource('documents', 'DocumentsController');
 
     // Inventory items
     Route::delete('inventory_items/destroy', 'InventoryItemController@massDestroy')->name('inventory_items.massDestroy');

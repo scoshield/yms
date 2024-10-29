@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 
-use Gate;
+// use Gate;
 use App\Service;
 use App\Yard;
 use App\GatePass;
@@ -13,6 +13,8 @@ use App\Employee;
 use App\LoadingBay;
 use App\InventoryItem;
 use App\Appointment;
+use App\AppointmentDocument;
+use App\Document;
 use App\Events\AppointmentApproved;
 use App\Http\Controllers\Controller;
 use App\Events\AppointmentCreatedEvent;
@@ -26,6 +28,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Elibyy\TCPDF\Facades\TCPDF;
+use Exception;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AppointmentsController extends Controller
@@ -50,6 +56,7 @@ class AppointmentsController extends Controller
                 $hodAppointmentGate = 'grant_hod_approval';
                 $securityAppointmentGate = 'grant_security_approval';
                 $printPassAppointmentGate = 'appointment_printpass';
+                $appointmentGateout = 'appointment_gateout';
                 $crudRoutePart = 'appointments';
 
                 return view('partials.datatablesActions', compact(
@@ -61,6 +68,7 @@ class AppointmentsController extends Controller
                     'admitAppointmentGate',
                     'printPassAppointmentGate',
                     'crudRoutePart',
+                    'appointmentGateout',
                     'row'
                 ));
             });
@@ -75,6 +83,10 @@ class AppointmentsController extends Controller
 
             $table->addColumn('yard_name', function ($row) {
                 return $row->yard ? $row->yard->name : '';
+            });
+
+            $table->editColumn('appointment', function ($row) {
+                return $row->driver_name . ' (' . $row->truck_details . ')';
             });
 
             $table->addColumn('creator_name', function ($row) {
@@ -140,6 +152,8 @@ class AppointmentsController extends Controller
             'creator_id' => Auth::id()
         ]);
 
+        // dd($request->all());
+
         $appointment = Appointment::create($request->all());
         $appointment->services()->sync($request->input('services', []));
 
@@ -148,11 +162,14 @@ class AppointmentsController extends Controller
             $inventory_item->status = 'checked_out';
             $inventory_item->checked_out = true;
             $inventory_item->update();
+            dd($inventory_item);
             return redirect()->route('admin.inventory_items.index');
         }
+
+        // if
         // $supervisors = User::whereHas()
         //notify users
-        event(new AppointmentCreatedEvent($appointment));
+       event(new AppointmentCreatedEvent($appointment));
 
         return redirect()->route('admin.appointments.index');
     }
@@ -187,8 +204,9 @@ class AppointmentsController extends Controller
         abort_if(Gate::denies('appointment_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         //$appointment->load('client', 'employee', 'services');
+        $action = 'exit/enter';
 
-        return view('admin.appointments.show', compact('appointment'));
+        return view('admin.appointments.show', compact('appointment', 'action'));
     }
 
     public function destroy(Appointment $appointment)
@@ -204,23 +222,120 @@ class AppointmentsController extends Controller
     {
         abort_if(Gate::denies('appointment_admit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $gatePass = null;
-        DB::transaction(function () use ($request) {
+        // dd($request);
+        // $validator = Validator::make($request->all(), [
+        //     'gateinImage' => ['required', 'image']
+        // ]);
+
+        // if($validator->fails())
+        // {
+        //     return back()->with(['message' => 'Truck image required.']);
+        // }
+
+        // $gatePass = null;
+        // $path = $request->file('gateinImage')->store('entries');
+        // $file = basename($path);
+       
+        DB::beginTransaction();
+
+        try {
             $appointment = Appointment::find($request->id);
             $appointment->update(['status' => 'admitted']);
             $appointment->update(['admitted_at' => date('Y-m-d H:i:s')]);
             $appointment->update(['admitted_by' => Auth::id()]);
+            // $appointment->update(['gatein_image_url' => $file]);
 
+            $purpose = $appointment->purpose;
+            $double = false;
+
+            if($appointment->purpose == 'offloading_and_loading')
+            {
+                $purpose = 'offloading';
+                $double = true;
+            }
             LoadingBay::create([
                 'ref' => Str::uuid()->toString(),
                 'appointment_id' => $appointment->id,
-                'type' => $appointment->purpose
+                'type' => $purpose
             ]);
-
+            // Create a loading request - 
+            if($double)
+            {
+                LoadingBay::create([
+                    'ref' => Str::uuid()->toString(),
+                    'appointment_id' => $appointment->id,
+                    'type' => 'loading'
+                ]);
+            }
+            // save any attached documents
+            foreach($request->documents as $doc)
+            {
+                $appDoc = AppointmentDocument::updateOrCreate([
+                    'appointment_id' => $appointment->id,
+                    'value' => $doc['value'],
+                    'document_id' => $doc['id']
+                ], ['user_id' => Auth::id()]);
+            }
+            // generate gatepass;
             $this->generatePass($appointment);
+        } catch (Exception $exception) {
+            DB::rollBack();
+            throw new Exception('Something went wrong. '.$exception->getMessage());
+            
+        }
+        DB::commit();
+        return back()->with(['message' => 'Truck admitted to the facility']);
+    }
+
+    public function downloadFile($filename)
+    {
+        return Storage::download('/entries/'.$filename);
+    }
+
+
+    public function gateout(Request $request)
+    {
+        abort_if(Gate::denies('appointment_gateout'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $gatePass = null;
+        DB::transaction(function () use ($request) {
+            $appointment = Appointment::find($request->id);
+            $appointment->update(['status' => 'gateout']);
+            $appointment->update(['gateout' => date('Y-m-d H:i:s')]);
+            $appointment->update(['gateout_by' => Auth::id()]);
+
+            // LoadingBay::create([
+            //     'ref' => Str::uuid()->toString(),
+            //     'appointment_id' => $appointment->id,
+            //     'type' => $appointment->purpose
+            // ]);
+
+            // $this->generatePass($appointment);
         });
 
         return back();
+    }
+
+    public function gateoutTruck(Appointment $appointment)
+    {
+        abort_if(Gate::denies('appointment_gateout'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        //$appointment->load('client', 'employee', 'services');
+        $action = 'exit/enter';
+
+        return view('admin.appointments.gateout', compact('appointment', 'action'));
+    }
+
+    public function gateinTruck(Request $request, Appointment $appointment)
+    {
+        abort_if(Gate::denies('appointment_gateout'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        //$appointment->load('client', 'employee', 'services');
+        $action = 'exit/enter';
+        $docs = Document::all();
+        // dd($appointment);
+
+        return view('admin.appointments.gatein', compact('appointment', 'action', 'docs'));
     }
 
     public function approve(Request $request)
@@ -233,7 +348,7 @@ class AppointmentsController extends Controller
         $appointment->update(['status' => $request->approval_type . '_approved']);
         $appointment->update([$request->approval_type . '_approved_at' => date('Y-m-d H:i:s')]);
         $appointment->update([$request->approval_type . '_approved_by' => Auth::id()]);
-        event(new AppointmentApproved($appointment));
+        //event(new AppointmentApproved($appointment));
         return back();
     }
 
@@ -248,10 +363,10 @@ class AppointmentsController extends Controller
         $ref = explode($tag, $request->ref);
 
         $id = $ref[0];
-        $level = $ref[1];
+        $level = $ref[1] ?? '';
 
         $appointment_row = DB::select('select id from appointments where sha1(id) = ?', [$id]);
-        $appointment_id = $appointment_row[0]->id;
+        $appointment_id = $appointment_row[0]->id ?? 1;
         $appointment = Appointment::find($appointment_id);
 
         $approval_type = 'hod';
@@ -262,7 +377,7 @@ class AppointmentsController extends Controller
         $appointment->update(['status' => $approval_type . '_approved']);
         $appointment->update([$approval_type . '_approved_at' => date('Y-m-d H:i:s')]);
         $appointment->update([$approval_type . '_approved_by' => Auth::id()]);
-        event(new AppointmentApproved($appointment));
+//        event(new AppointmentApproved($appointment));
         return redirect()->route('admin.appointments.index');
     }
 
@@ -332,7 +447,7 @@ class AppointmentsController extends Controller
 
         $pdf::AddPage();
 
-        $pdf::SetFont('helvetica', '', 12);
+        $pdf::SetFont('helvetica', '', 10);
 
         $data = [
             'title' => 'Generate PDF using Laravel TCPDF - ItSolutionStuff.com!',

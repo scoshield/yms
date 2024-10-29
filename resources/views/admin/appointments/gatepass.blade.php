@@ -3,6 +3,16 @@
 
 <head>
     <title>GatePass</title>
+    <style>
+        .table td{
+            border: 1px solid #e3e3e3;
+        }
+
+        /* .table {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        } */
+    </style>
 </head>
 
 <body>
@@ -89,46 +99,120 @@
 
     </div>
 
+    <table class="table" style="line-height: 2;border:1px solid #e3e3e3">
+        @if ($appointment->admitted_at)
+            <tr style="font-weight: bold;border:1px solid #cccccc;background-color:#f2f2f2;">
+                <td colspan="2"><span class="fw-bold" style="font-weight: bold">Gate In:</span></td>
+                <td>{{ $appointment->admission->name ?? '' }}</td>
+                <td>{{ formatDate($appointment->admitted_at) }}</td>
+            </tr>
+        @endif
+        @php $time = 0; $time2= 0; @endphp
+        @if ($appointment->offloading)
+            {{-- <tr>
+                    <td colspan="3">OFFLOADING</td>
+                </tr> --}}
+            <tr>
+                <td><span class="fw-bold" style="font-weight: bold">OFFLOADING</span></td>
+                <td>Start</td>
+                <td>{{ $appointment->offloading->starter->name ?? '' }}</td>
+                <td>{{ formatDate($appointment->offloading->started_at) }}</td>
+
+            </tr>
+            <tr>
+                <td></td>
+                <td><span class="fw-bold">End:</span></td>
+                <td>{{ $appointment->offloading->finisher->name ?? '' }}</td>
+                <td>{{ formatDate($appointment->offloading->finished_at) }}</td>
+            </tr>
+            <tr>
+                <td colspan="3"><span style="font-weight: bold; float: right;">T.A.T</span></td> @php $time = $time + (int)dateDifference($appointment->offloading->finished_at, $appointment->offloading->started_at); @endphp
+                <td><span style="font-weight: bold; font-size: 14px;">{{ $time }}</span>
+                </td>
+            </tr>
+        @endif
+
+        @if ($appointment->loading)
+            <tr>
+                <td><span class="fw-bold" style="font-weight: bold">LOADING</span></td>
+                <td>Start</td>
+                <td>{{ $appointment->loading->starter->name ?? '' }}</td>
+                <td>{{ formatDate($appointment->loading->started_at) }}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><span class="fw-bold">End:</span></td>
+                <td>{{ $appointment->loading->finisher->name ?? '' }}</td>
+                <td>{{ formatDate($appointment->loading->finished_at) }}</td>
+            </tr>
+            <tr>
+                <td colspan="3"><span style="font-weight: bold; float: right;">T.A.T</span></td>@php $time2 =+ (int)dateDifference($appointment->loading->finished_at, $appointment->loading->started_at); @endphp
+                <td><span style="font-weight: bold; font-size: 14px;">{{ $time2 }}</span>
+                </td>
+            </tr>
+        @endif
+
+        @if ($appointment->admitted_at)
+            <tr>
+                <td colspan="2"><span class="fw-bold" style="font-weight: bold">Gate Out:</span></td>
+                <td>{{ $appointment->admission->name ?? '' }}</td>
+                <td>{{ formatDate($appointment->admitted_at) }}</td>
+            </tr>
+        @endif
+    </table>
+    
+   <div>&nbsp;</div>
+    <table class="table" style="line-height: 2;border:1px solid #e3e3e3; margin-top: 10px;">
+        <thead>
+            <tr style="font-weight: bold;border:1px solid #cccccc;background-color:#f2f2f2;">
+                <th colspan="3">GLOBAL T.A.T</th>
+                <th><span style="font-weight: bold; font-size: 14px;">{{$time + $time2}}</span>
+                </th>
+            </tr>
+        </thead>
+    </table>
+    <div>&nbsp;</div>
     {{-- <br /><br /> --}}
-    <table>
+    <table class="table" style="line-height: 2;border:1px solid #e3e3e3;">
+        {{-- @if ($appointment->hod_approved_by) --}}
+            <tr>
+                <td>Appointment By:</td>
+                <td colspan="2">{{ $appointment->creator->name ?? '' }}</td>
+                <td>{{ formatDate($appointment->hod_approved_at) }}</td>
+            </tr>
+        {{-- @endif --}}
+
         @if ($appointment->hod_approved_by)
             <tr>
                 <td>H.O.D Approval:</td>
-                <td>{{ $appointment->hod_approver->name }}</td>
-                <td>{{ $appointment->hod_approved_at }}</td>
+                <td colspan="2">{{ $appointment->hod_approver->name }}</td>
+                <td>{{ formatDate($appointment->hod_approved_at) }}</td>
             </tr>
         @endif
 
         @if ($appointment->security_approved_by)
             <tr>
                 <td>Security Approval:</td>
-                <td>{{ $appointment->security_approver->name }}</td>
-                <td>{{ $appointment->security_approved_at }}</td>
+                <td colspan="2">{{ $appointment->security_approver->name }}</td>
+                <td>{{ formatDate($appointment->security_approved_at) }}</td>
             </tr>
         @endif
     </table>
 
     <br />
 
-    <table>
+    {{-- <table>
         <tr>
             <td>
                 <p>
                     <br /><br />
                     Issued By: {{ Auth::user()->name }} _____________________<br />
                     Received By: ________________________<br />
-                    {{-- BIC: 23141434<br /> --}}
                 </p>
             </td>
 
-            {{-- <td style="text-align:right;">
-                <p style="margin-right:0">
-                    <img src="data:image/svg;base64,  {{ $qrCode }}" width="70"
-                        style="margin-top:10px; float: right;">
-                </p>
-            </td> --}}
         </tr>
-    </table>
+    </table> --}}
 
 </body>
 
